@@ -8,17 +8,18 @@ document.addEventListener('DOMContentLoaded', function() {    // Navigation hand
         e.stopPropagation(); // Prevent document click from immediately closing it
         hamburger.classList.toggle('active');
         navLinks.classList.toggle('active');
+        navLinks.classList.toggle('mobile-hidden');
         navOverlay.classList.toggle('active');
         
         // Add class to body to prevent scrolling when menu is open
         document.body.classList.toggle('menu-open');
     });
-    
-    // Close mobile menu when a nav link is clicked
+      // Close mobile menu when a nav link is clicked
     document.querySelectorAll('.nav-links a').forEach(link => {
         link.addEventListener('click', () => {
             hamburger.classList.remove('active');
             navLinks.classList.remove('active');
+            navLinks.classList.add('mobile-hidden');
             navOverlay.classList.remove('active');
             document.body.classList.remove('menu-open');
         });
@@ -28,6 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {    // Navigation hand
     navOverlay.addEventListener('click', function() {
         hamburger.classList.remove('active');
         navLinks.classList.remove('active');
+        navLinks.classList.add('mobile-hidden');
         navOverlay.classList.remove('active');
         document.body.classList.remove('menu-open');
     });

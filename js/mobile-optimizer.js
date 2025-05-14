@@ -12,6 +12,105 @@ document.addEventListener('DOMContentLoaded', function() {
     
     console.log('Mobile optimizer activated');
     
+    // Optimize mobile navigation
+    optimizeMobileNavigation();
+    
+    // Optimize image loading
+    optimizeImageLoading();
+    
+    // Improve touch interactions
+    improveTouchInteractions();
+    
+    // Add resize handler
+    handleResize();
+      /**
+     * Optimize mobile navigation
+     * Ensures the navigation menu is properly hidden and only shows on demand
+     */
+    function optimizeMobileNavigation() {
+        const header = document.querySelector('header');
+        const navLinks = document.querySelector('.nav-links');
+        const hamburger = document.querySelector('.hamburger');
+        
+        // Ensure navigation is initially hidden on mobile
+        if (navLinks) {
+            // Use CSS classes to properly hide the menu
+            if (!navLinks.classList.contains('active')) {
+                navLinks.classList.add('mobile-hidden');
+            }
+        }
+        
+        // Make header more compact and fixed on mobile
+        if (header) {
+            header.style.boxShadow = '0 2px 5px rgba(0, 0, 0, 0.1)';
+            header.style.position = 'fixed';
+            header.style.width = '100%';
+            header.style.zIndex = '1000';
+            header.style.top = '0';
+        }
+        
+        // Ensure hamburger is visible and accessible
+        if (hamburger) {
+            hamburger.style.display = 'flex';
+            hamburger.style.flexDirection = 'column';
+            hamburger.style.justifyContent = 'center';
+            hamburger.style.alignItems = 'center';
+            hamburger.style.width = '45px';
+            hamburger.style.height = '45px';
+            hamburger.style.padding = '10px';
+            hamburger.style.marginRight = '-10px';
+        }
+        
+        // Add scroll event listener to handle header appearance
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 10) {
+                if (header) header.classList.add('scrolled');
+            } else {
+                if (header) header.classList.remove('scrolled');
+            }
+        });
+    }
+    
+    /**
+     * Optimize image loading
+     */
+    function optimizeImageLoading() {
+        // Implementation left for future optimization
+    }
+    
+    /**
+     * Improve touch interactions
+     */
+    function improveTouchInteractions() {
+        // Add better touch feedback for navigation
+        const navLinks = document.querySelectorAll('.nav-links a');
+        
+        navLinks.forEach(link => {
+            link.addEventListener('touchstart', function() {
+                this.style.opacity = '0.7';
+            });
+            
+            link.addEventListener('touchend', function() {
+                this.style.opacity = '1';
+            });
+        });
+    }
+    
+    /**
+     * Handle resize events
+     */
+    function handleResize() {
+        window.addEventListener('resize', function() {
+            // Re-apply mobile optimizations if needed
+            if (window.innerWidth <= 768) {
+                optimizeMobileNavigation();
+            }
+        });
+    }
+});
+    
+    console.log('Mobile optimizer activated');
+    
     // Check connection speed and optimize accordingly
     checkConnectionAndOptimize();
     

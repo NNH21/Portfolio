@@ -510,6 +510,10 @@
 }
 
 /* Hamburger animation */
+.hamburger .bar {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
 .hamburger.active .bar:nth-child(1) {
     transform: translateY(8px) rotate(45deg);
 }
