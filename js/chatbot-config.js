@@ -8,7 +8,7 @@ const CHATBOT_CONFIG = {
     geminiApiKey: 'AIzaSyC-XhSIu3F_vKL9DVHtwv6ZSYsqbEyWhck',
     
     // Initial greeting message
-    welcomeMessage: "Hello! I'm your Mis assistant. How can I help you today?",
+    welcomeMessage: "Xin chào! Tôi là trợ lý ảo Mis. Tôi có thể giúp gì cho bạn?",
     
     // Chatbot name
     botName: "Trợ lý Mis",
@@ -16,28 +16,46 @@ const CHATBOT_CONFIG = {
     // Quick reply options
     quickReplyOptions: [
         {
-            text: "Portfolio",
+            text: "Dự án",
             value: "portfolio"
         },
         {
-            text: "Skills",
+            text: "Kỹ năng",
             value: "skills"
         },
         {
-            text: "Contact",
+            text: "Liên hệ",
             value: "contact"
         },
         {
-            text: "Chat on Zalo",
+            text: "Chat qua Zalo",
             value: "zalo"
         }
     ],
     
     // Suggested questions
     suggestedQuestions: [
-        "Bạn đã làm những dự án nào?",
-        "Bạn sử dụng công nghệ nào?",
-        "Tôi có thể thuê bạn cho dự án của tôi như thế nào?",
-        "Kinh nghiệm làm việc của bạn là gì?"
-    ]
+        "Bạn có những dự án nào?",
+        "Bạn có kinh nghiệm với công nghệ gì?",
+        "Làm thế nào để liên hệ với bạn?"
+    ],
+    
+    // UI Configuration
+    ui: {
+        // Chatbot colors
+        primaryColor: "#4831d4",
+        secondaryColor: "#f5f5f5",
+        textColor: "#333333",
+        
+        // Chatbot size and position
+        width: "320px",
+        height: "450px",
+        position: "right", // right or left
+        
+        // Chatbot bubble
+        bubbleSize: "60px",
+        
+        // Animation
+        animationSpeed: "0.3s"
+    }
 };

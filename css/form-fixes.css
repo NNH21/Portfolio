@@ -1,0 +1,61 @@
+/* Form fixes for preventing unwanted scrolling */
+
+/* Ensure form elements maintain focus properly */
+.form-group {
+    position: relative;
+    transition: transform 0.3s ease;
+}
+
+.form-group.active {
+    z-index: 10;
+}
+
+.form-group input,
+.form-group textarea {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    position: relative;
+    z-index: 2;
+}
+
+/* Special class for form fields with the fix applied */
+.focus-fix {
+    touch-action: manipulation;
+    /* Prevent iOS zoom on focus */
+    font-size: 16px !important;
+}
+
+/* Prevent unwanted scrolling when interacting with form */
+.contact-form {
+    isolation: isolate;
+    z-index: 5;
+    position: relative;
+}
+
+/* Make sure the form has proper stacking context */
+#contactForm {
+    position: relative;
+    z-index: 10;
+}
+
+/* Make sure buttons don't cause scrolling */
+.form-group + button,
+#contactForm button[type="submit"] {
+    position: relative;
+    z-index: 2;
+    touch-action: manipulation;
+}
+
+/* Fix for iOS devices */
+@supports (-webkit-overflow-scrolling: touch) {
+    .form-group input,
+    .form-group textarea {
+        font-size: 16px !important;
+    }
+    
+    /* Prevent iOS zoom on focus */
+    .contact-form {
+        transform: translateZ(0);
+    }
+}

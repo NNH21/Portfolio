@@ -3,6 +3,21 @@ document.addEventListener('DOMContentLoaded', function() {
     // Implement smooth scroll for all anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
+            // Don't prevent default behavior if it's form elements or inside a form
+            const isFormElement = this.closest('form') !== null || 
+                                  this.closest('input') !== null || 
+                                  this.closest('textarea') !== null ||
+                                  this.closest('select') !== null ||
+                                  this.tagName.toLowerCase() === 'input' || 
+                                  this.tagName.toLowerCase() === 'textarea' ||
+                                  this.tagName.toLowerCase() === 'select' ||
+                                  this.tagName.toLowerCase() === 'button';
+            
+            // Don't handle smooth scroll for form elements or if parent is a form element
+            if (isFormElement && this.getAttribute('type') !== 'submit') {
+                return; // Allow form fields to work normally
+            }
+            
             e.preventDefault();
             
             const targetId = this.getAttribute('href');
@@ -20,6 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+    
     // 3D tilt effect for cards and images
     const tiltElements = document.querySelectorAll('.project-card, .about-image, .skill-card');
     

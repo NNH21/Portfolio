@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, minimum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <meta name="theme-color" content="#4831d4">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -11,10 +11,11 @@
     <title>My Professional Portfolio</title>    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/styles.css">      <link rel="stylesheet" href="css/animations.css">    <link rel="stylesheet" href="css/special-effects.css">
-    <link rel="stylesheet" href="css/responsive.css">
-    <link rel="stylesheet" href="css/mobile-adjustments.css">
+    <link rel="stylesheet" href="css/responsive.css">    <link rel="stylesheet" href="css/mobile-adjustments.css">
     <link rel="stylesheet" href="css/chatbot.css">
     <link rel="stylesheet" href="css/image-fixes.css">
+    <link rel="stylesheet" href="css/form-fixes.css">
+    <link rel="stylesheet" href="css/desktop-menu.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -38,6 +39,7 @@
     </div>    <!-- Header Section -->
     <header>        <nav class="navbar">
             <div class="logo">Portfolio</div>
+            <!-- Mobile Navigation Links - Hidden on Desktop -->
             <ul class="nav-links mobile-hidden">
                 <li><a href="#home" class="active">Home</a></li>
                 <li><a href="#about">About</a></li>
@@ -45,13 +47,65 @@
                 <li><a href="#projects">Projects</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
+            <!-- Desktop Main Menu - Only shows on desktop -->
+            <div class="desktop-menu">
+                <ul class="main-menu">
+                    <li class="main-menu-category" data-target="home">
+                        <div class="category-title">Home <i class="fas fa-chevron-down"></i></div>
+                        <ul class="submenu">
+                            <li class="submenu-item"><a href="#home" class="submenu-link">Trang chủ</a></li>
+                            <li class="submenu-item"><a href="#home" class="submenu-link">Giới thiệu</a></li>
+                            <li class="submenu-item"><a href="#home" class="submenu-link">Slider</a></li>
+                        </ul>
+                    </li>
+                    <li class="main-menu-category" data-target="about">
+                        <div class="category-title">About <i class="fas fa-chevron-down"></i></div>
+                        <ul class="submenu">
+                            <li class="submenu-item"><a href="#about" class="submenu-link">Về tôi</a></li>
+                            <li class="submenu-item"><a href="#about" class="submenu-link">Kinh nghiệm</a></li>
+                            <li class="submenu-item"><a href="#about" class="submenu-link">Học vấn</a></li>
+                            <li class="submenu-item"><a href="#about" class="submenu-link">Sở thích</a></li>
+                        </ul>
+                    </li>
+                    <li class="main-menu-category" data-target="skills">
+                        <div class="category-title">Skills <i class="fas fa-chevron-down"></i></div>
+                        <ul class="submenu">
+                            <li class="submenu-item"><a href="#skills" class="submenu-link">Frontend</a></li>
+                            <li class="submenu-item"><a href="#skills" class="submenu-link">Backend</a></li>
+                            <li class="submenu-item"><a href="#skills" class="submenu-link">Design</a></li>
+                            <li class="submenu-item"><a href="#skills" class="submenu-link">Other</a></li>
+                        </ul>
+                    </li>
+                    <li class="main-menu-category" data-target="projects">
+                        <div class="category-title">Projects <i class="fas fa-chevron-down"></i></div>
+                        <ul class="submenu">
+                            <li class="submenu-item"><a href="#projects" class="submenu-link">Web Development</a></li>
+                            <li class="submenu-item"><a href="#projects" class="submenu-link">Mobile Apps</a></li>
+                            <li class="submenu-item"><a href="#projects" class="submenu-link">UI/UX Design</a></li>
+                            <li class="submenu-item"><a href="#projects" class="submenu-link">All Projects</a></li>
+                        </ul>
+                    </li>
+                    <li class="main-menu-category" data-target="contact">
+                        <div class="category-title">Contact <i class="fas fa-chevron-down"></i></div>
+                        <ul class="submenu">
+                            <li class="submenu-item"><a href="#contact" class="submenu-link">Liên hệ</a></li>
+                            <li class="submenu-item"><a href="#contact" class="submenu-link">Gửi email</a></li>
+                            <li class="submenu-item"><a href="#contact" class="submenu-link">Location</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <div class="menu-right">
+                    <a href="#" class="menu-icon"><i class="fas fa-search"></i></a>
+                    <a href="#contact" class="menu-button">Hire Me</a>
+                </div>
+            </div>
             <div class="hamburger">
                 <span class="bar"></span>
                 <span class="bar"></span>
                 <span class="bar"></span>
             </div>
-        </nav>
-    </header>
+        </nav>    </header>
+    
     <!-- Navigation overlay -->
     <div class="nav-overlay"></div><!-- Hero Section -->
     <section id="home" class="hero">
@@ -92,7 +146,8 @@
             <h2 class="animate-scale-up">About Me</h2>
             <div class="underline animate-slide-up"></div>
         </div>
-        <div class="about-content">            <div class="about-image reveal reveal-left">
+        <div class="about-content">            
+            <div class="about-image reveal reveal-left">
                 <img src="images/personal/about-freelancer.jpg" alt="freelancer" importance="high" 
                     loading="eager" 
                     onerror="this.onerror=null; this.src='images/personal/placeholder.jpg';"
@@ -193,7 +248,7 @@
                 </div>
                 <div class="skill-item">
                     <div class="skill-info">
-                        <h3>Database(SQL - MongoDB)</h3>
+                        <h3>SQL - MongoDB</h3>
                         <div class="progress-bar">
                             <div class="progress" style="width: 70%"></div>
                         </div>
@@ -592,11 +647,15 @@
     <script src="js/scroll-reveal.js"></script>
     <script src="js/particles.js"></script>    
     <script src="js/advanced-effects.js"></script>
-    <script src="js/counters.js"></script>
-    <script src="js/mobile-enhancements.js"></script>    <script src="js/image-optimizer.js"></script>
+    <script src="js/counters.js"></script>    <script src="js/mobile-enhancements.js"></script>    <script src="js/image-optimizer.js"></script>
     <script src="js/mobile-image-fixes.js"></script>
     <script src="js/mobile-image-tester.js"></script>
     <script src="js/mobile-optimizer.js"></script>
+    <script src="js/desktop-menu.js"></script>
+    
+    <!-- Form fix script -->
+    <script src="js/form-fix.js"></script>
+    
     <!-- Chatbot scripts -->
     <script src="js/chatbot-config.js"></script>
     <script src="js/gemini-api.js"></script>
@@ -604,5 +663,8 @@
     <script src="js/chatbot-suggested.js"></script>
     <!-- Contact form script -->
     <script src="js/contact-form.js"></script>
+    
+    <!-- Final form fix to prevent focus scrolling issues -->
+    <script src="js/form-focus-fix.js"></script>
 </body>
 </html>

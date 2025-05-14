@@ -142,10 +142,8 @@ document.addEventListener('DOMContentLoaded', function() {
     inputFields.forEach(field => {
         // Add focus/blur handling for keyboard
         field.addEventListener('focus', () => {
-            // Add padding or margin to avoid fixed elements covering the input
-            setTimeout(() => {
-                window.scrollTo(0, field.getBoundingClientRect().top - 100);
-            }, 300);
+            // Don't use scroll adjustment here as it causes issues
+            // Just let the form-focus-fix.js handle this instead
         });
         
         // Fix for iOS zooming on input focus

@@ -49,6 +49,20 @@ img, .hero-image img, .about-image img, .project-image img {
     visibility: hidden !important;
 }
 
+/* Desktop menu display controls */
+@media (max-width: 991px) {
+    .desktop-menu {
+        display: none !important; /* Force hide on mobile/tablet */
+    }
+}
+
+/* Mobile specific classes */
+.mobile-hidden {
+    right: -300px !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
 @media (max-width: 991px) {
     /* Hide navigation by default on mobile */
     .nav-links {

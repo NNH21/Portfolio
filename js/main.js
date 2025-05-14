@@ -1,5 +1,29 @@
 // Wait for the DOM to be fully loaded
-document.addEventListener('DOMContentLoaded', function() {    // Navigation handling for mobile menu
+document.addEventListener('DOMContentLoaded', function() {    
+    // Check for desktop or mobile
+    const isMobile = window.innerWidth < 992;
+
+    // Fix for forms scrolling to top on focus
+    const contactInputs = document.querySelectorAll('#contactForm input, #contactForm textarea');
+    if (contactInputs.length > 0) {
+        contactInputs.forEach(input => {
+            input.addEventListener('focus', function(e) {
+                // Prevent scroll events during focus
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Make sure no unwanted scrolling happens
+                setTimeout(() => {
+                    // Restore the scroll position if needed
+                    window.scrollTo({
+                        top: window.scrollY
+                    });
+                }, 10);
+            });
+        });
+    }
+    
+    // Navigation handling for mobile menu
     const hamburger = document.querySelector('.hamburger');
     const navLinks = document.querySelector('.nav-links');
     const navOverlay = document.querySelector('.nav-overlay');

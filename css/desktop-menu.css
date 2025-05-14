@@ -1,0 +1,210 @@
+/* Desktop Main Menu Styles */
+
+/* Only display on larger screens */
+.desktop-menu {
+    display: flex;
+    justify-content: flex-end; /* Change to push menu to the right */
+    align-items: center;
+    width: 100%;
+}
+
+/* Add RGB values for animation */
+:root {
+    --primary-color-rgb: 94, 59, 238; /* RGB value of #5e3bee */
+}
+
+@media (min-width: 992px) {
+    /* Show the desktop menu and hide mobile menu */
+    .desktop-menu {
+        display: flex;
+        flex: 1;
+        justify-content: space-between;
+        align-items: center;
+        margin: 0 20px;
+    }
+    
+    .nav-links.mobile-hidden {
+        display: none; /* Hide mobile nav links on desktop */
+    }
+    
+    /* Main menu styling */
+    .main-menu {
+        display: flex;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        gap: 15px; /* Add some spacing between menu items */
+    }
+
+    .main-menu-category {
+        position: relative;
+        padding: 10px 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .category-title {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-weight: 500;
+    }
+
+    .category-title i {
+        font-size: 0.8em;
+        transition: transform 0.3s ease;
+    }
+
+    .main-menu-category:hover .category-title i {
+        transform: rotate(180deg);
+    }
+
+    /* Dropdown submenu styling with improved animations */
+    .submenu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        min-width: 200px;
+        background-color: #fff;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        border-radius: 8px;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(10px);
+        transition: all 0.3s ease;
+        z-index: 100;
+        padding: 10px 0;
+    }
+
+    .main-menu-category:hover .submenu {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    .submenu-item {
+        list-style: none;
+    }
+
+    .submenu-link {
+        display: block;
+        padding: 8px 15px;
+        text-decoration: none;
+        color: #333;
+        transition: all 0.3s ease;
+    }
+    
+    .submenu-link:hover {
+        background-color: #f5f5f5;
+        color: #4831d4;
+    }
+
+    /* Special styling for the right side menu items */
+    .menu-right {
+        display: flex;
+        align-items: center;
+        margin-left: 20px;
+    }
+
+    .menu-button {
+        padding: 8px 20px;
+        background-color: #4831d4;
+        color: white;
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .menu-button:hover {
+        background-color: #372aaa;
+        transform: translateY(-2px);
+    }
+
+    .menu-icon {
+        margin-right: 15px;
+        font-size: 1.2em;
+        color: #333;
+    }
+
+    /* Make the navbar more modern */
+    .navbar {
+        display: flex;
+        align-items: center;
+        padding: 15px 30px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        background: white;
+    }
+    
+    /* Logo styling */
+    .logo {
+        font-size: 28px;
+        font-weight: 700;
+        background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+    
+    .logo::after {
+        content: '';
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        background: var(--primary-color);
+        border-radius: 50%;
+        bottom: 5px;
+        right: -8px;
+    }
+}
+
+/* Add responsive adjustments for smaller desktops */
+@media (min-width: 992px) and (max-width: 1200px) {
+    .main-menu {
+        gap: 15px;
+    }
+    
+    .category-title {
+        font-size: 14px;
+    }
+    
+    .menu-button {
+        padding: 8px 15px;
+        font-size: 13px;
+    }
+}
+
+/* Pulse animation for the Hire Me button */
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(var(--primary-color-rgb), 0.6);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(var(--primary-color-rgb), 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(var(--primary-color-rgb), 0);
+    }
+}
+
+.pulse-animation {
+    animation: pulse 1s ease-in-out;
+}
+
+/* Responsive adjustments */
+@media (max-width: 991px) {
+    .desktop-menu {
+        display: none;
+    }
+}
+
+@media (min-width: 992px) {
+    .mobile-hidden {
+        display: none !important;
+    }
+    
+    .hamburger {
+        display: none;
+    }
+}

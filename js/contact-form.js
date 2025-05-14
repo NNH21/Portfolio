@@ -23,6 +23,30 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize EmailJS
     emailjs.init(EMAILJS_PUBLIC_KEY);
     
+    // Function to ensure element is visible by scrolling to it
+    function scrollToElement(element) {
+        if (!element) return;
+        
+        // Get element position
+        const rect = element.getBoundingClientRect();
+        const isInViewport = (
+            rect.top >= 0 &&
+            rect.left >= 0 &&
+            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+            rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+        );
+        
+        // If not in viewport, scroll to it
+        if (!isInViewport) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            // Extra attempt to ensure scrolling works
+            setTimeout(() => {
+                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 300);
+        }
+    }
+    
     // Get the form element
     const contactForm = document.getElementById('contactForm');
     
@@ -39,8 +63,8 @@ document.addEventListener('DOMContentLoaded', function() {
             formStatus.textContent = 'Sending...';
             formStatus.className = 'form-status sending';
             
-            // LỖI: Phương thức sendForm() có thể là lựa chọn tốt hơn
-            // vì nó sẽ tự động thu thập các giá trị từ form
+            // Scroll to status
+            scrollToElement(formStatus);
             
             // Sử dụng emailjs.sendForm thay vì emailjs.send
             emailjs.sendForm(
@@ -56,6 +80,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 formStatus.textContent = 'Message sent successfully!';
                 formStatus.className = 'form-status success';
                 
+                // Scroll to success message
+                scrollToElement(formStatus);
+                
                 // Reset the form
                 contactForm.reset();
                 
@@ -70,6 +97,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Show error message
                 formStatus.textContent = 'Failed to send message. Please try again.';
                 formStatus.className = 'form-status error';
+                
+                // Scroll to error message
+                scrollToElement(formStatus);
             });
         });
     }
@@ -89,6 +119,9 @@ document.addEventListener('DOMContentLoaded', function() {
             let statusMsg = document.createElement('div');
             statusMsg.className = 'newsletter-status';
             this.appendChild(statusMsg);
+            
+            // Scroll to status message
+            scrollToElement(statusMsg);
             
             // Tạo dữ liệu template cho newsletter
             const templateParams = {
@@ -110,6 +143,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 statusMsg.textContent = 'Subscribed successfully!';
                 statusMsg.className = 'newsletter-status success';
                 
+                // Scroll to success message
+                scrollToElement(statusMsg);
+                
                 // Reset the form
                 newsletterForm.reset();
                 
@@ -124,8 +160,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 statusMsg.textContent = 'Failed to subscribe. Please try again.';
                 statusMsg.className = 'newsletter-status error';
                 
+                // Scroll to error message
+                scrollToElement(statusMsg);
+                
                 console.error('Newsletter subscription failed:', error);
             });
         });
     }
-}); 
+});

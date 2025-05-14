@@ -33,6 +33,16 @@ document.addEventListener('DOMContentLoaded', function() {
         
         links.forEach(link => {
             link.addEventListener('click', function(e) {
+                // Kiểm tra nếu click vào trường input hoặc nút trong form thì bỏ qua
+                const isFormElement = this.closest('form') || 
+                                      this.tagName.toLowerCase() === 'input' || 
+                                      this.tagName.toLowerCase() === 'textarea' ||
+                                      this.tagName.toLowerCase() === 'button';
+                
+                if (isFormElement && this.getAttribute('type') !== 'submit') {
+                    return; // Cho phép các trường form hoạt động bình thường
+                }
+                
                 // Allow normal scroll behavior
                 // But add a nice transition animation
                 const href = this.getAttribute('href');
