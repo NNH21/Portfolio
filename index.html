@@ -1,17 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="theme-color" content="#4831d4">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="description" content="HoangDev21's professional portfolio showcasing web and mobile development projects">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
     <title>My Professional Portfolio</title>    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/styles.css">    <link rel="stylesheet" href="css/animations.css">
-    <link rel="stylesheet" href="css/special-effects.css">
+    <link rel="stylesheet" href="css/styles.css">      <link rel="stylesheet" href="css/animations.css">    <link rel="stylesheet" href="css/special-effects.css">
     <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/mobile-adjustments.css">
     <link rel="stylesheet" href="css/chatbot.css">
+    <link rel="stylesheet" href="css/image-fixes.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Preload critical images -->
+    <link rel="preload" href="images/personal/my-photo.jpg" as="image">
+    <link rel="preload" href="images/personal/about-freelancer.jpg" as="image">
 </head>
 <body>
     <!-- Preloader -->
@@ -72,9 +81,8 @@
             <h2 class="animate-scale-up">About Me</h2>
             <div class="underline animate-slide-up"></div>
         </div>
-        <div class="about-content">
-            <div class="about-image reveal reveal-left">
-                <img src="images/personal/about-freelancer.jpg" alt="freelancer">
+        <div class="about-content">            <div class="about-image reveal reveal-left">
+                <img src="images/personal/about-freelancer.jpg" alt="freelancer" importance="high" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'600\' height=\'400\' viewBox=\'0 0 600 400\'%3E%3Crect width=\'100%25\' height=\'100%25\' fill=\'%23f0f0f0\'/%3E%3Ctext x=\'300\' y=\'200\' font-family=\'Arial\' font-size=\'20\' text-anchor=\'middle\' fill=\'%23999999\'%3EImage not available%3C/text%3E%3C/svg%3E'">
             </div>
             <div class="about-text reveal reveal-right">
                 <h3>Who I Am</h3>
@@ -558,12 +566,17 @@
     <!-- Back to Top Button -->
     <a href="#home" class="back-to-top animate-pulse">
         <i class="fas fa-arrow-up"></i>
-    </a>    <!-- JavaScript -->
-    <script src="js/preloader.js"></script>
+    </a>    <!-- JavaScript -->    <script src="js/preloader.js"></script>
+    <script src="js/image-placeholders.js"></script>
+    <script src="js/image-fallback-handler.js"></script>
     <script src="js/main.js"></script>
     <script src="js/scroll-reveal.js"></script>
-    <script src="js/particles.js"></script>    <script src="js/advanced-effects.js"></script>
-    <script src="js/counters.js"></script>    <!-- Chatbot scripts -->
+    <script src="js/particles.js"></script>    
+    <script src="js/advanced-effects.js"></script>
+    <script src="js/counters.js"></script>    
+    <script src="js/mobile-enhancements.js"></script>
+    <script src="js/image-optimizer.js"></script>
+    <!-- Chatbot scripts -->
     <script src="js/chatbot-config.js"></script>
     <script src="js/gemini-api.js"></script>
     <script src="js/chatbot.js"></script>

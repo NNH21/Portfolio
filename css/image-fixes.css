@@ -1,0 +1,106 @@
+.project-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    min-height: 350px;
+}
+
+/* Fix for images not displaying properly */
+.project-image {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: 0;
+    padding-bottom: 66.67%; /* Default 3:2 aspect ratio */
+    background-color: #f8f8f8;
+}
+
+.project-image img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+    will-change: transform;
+}
+
+/* Add a loading indicator for project images */
+.project-image::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+                rgba(255,255,255,0) 0%, 
+                rgba(255,255,255,0.2) 20%, 
+                rgba(255,255,255,0.5) 60%, 
+                rgba(255,255,255,0.2) 80%, 
+                rgba(255,255,255,0) 100%);
+    transform: translateX(-100%);
+    animation: shimmer 2s infinite;
+    z-index: 1;
+    pointer-events: none;
+}
+
+@keyframes shimmer {
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+/* Fix for images that fail to load */
+img.error {
+    object-fit: contain;
+    background-color: #f0f0f0;
+    padding: 20px;
+    opacity: 0.7;
+}
+
+/* Add a proper fade-in animation for images */
+@keyframes imageFadeIn {
+    from { opacity: 0; filter: blur(10px); }
+    to { opacity: 1; filter: blur(0); }
+}
+
+.img-loaded {
+    animation: imageFadeIn 0.5s ease forwards;
+}
+
+/* Ensure all images have proper aspect ratios */
+.hero-image img,
+.about-image img,
+.skill-icon img,
+.testimonial-avatar img {
+    width: 100%;
+    height: auto;
+    display: block;
+    max-width: 100%;
+}
+
+/* Ensure image containers have proper size */
+.hero-image,
+.about-image {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* Fix for safari image display issues */
+@supports (-webkit-overflow-scrolling: touch) {
+    .project-image {
+        background-color: #f0f0f0;
+        transform: translateZ(0);
+    }
+    
+    img {
+        transform: translateZ(0); /* Forces GPU acceleration */
+    }
+}

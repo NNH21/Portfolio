@@ -400,11 +400,42 @@
         bottom: 0;
         right: 0;
         border-radius: 0;
+        max-width: 100%;
     }
     
     .chat-bubble {
-        bottom: 20px;
-        right: 20px;
+        bottom: 15px;
+        right: 15px;
+        width: 50px;
+        height: 50px;
+    }
+    
+    .chat-header {
+        padding: 10px;
+    }
+    
+    .chat-body {
+        height: calc(100% - 120px);
+    }
+    
+    .chat-footer {
+        padding: 8px;
+    }
+    
+    .chat-input {
+        font-size: 14px;
+    }
+    
+    .suggested-question {
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+    
+    .welcome-bubble {
+        bottom: 80px;
+        right: 15px;
+        max-width: 220px;
+        padding: 12px 15px;
     }
 }
 
