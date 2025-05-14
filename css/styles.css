@@ -29,6 +29,8 @@ body {
     color: var(--text-color);
     background-color: var(--background-color);
     overflow-x: hidden;
+    font-size: 16px;
+    line-height: 1.5;
 }
 
 a {
@@ -1103,5 +1105,40 @@ footer {
     .category {
         width: 100%;
         text-align: center;
+    }
+}
+
+/* Responsive Design */
+
+/* Mobile First Approach */
+body {
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+/* Tablets */
+@media (min-width: 768px) {
+    .hero-content h1 {
+        font-size: 2.5rem;
+    }
+    .hero-content h2 {
+        font-size: 2rem;
+    }
+    .hero-buttons {
+        flex-direction: row;
+    }
+}
+
+/* Desktops */
+@media (min-width: 1024px) {
+    .hero-content h1 {
+        font-size: 3rem;
+    }
+    .hero-content h2 {
+        font-size: 2.5rem;
+    }
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
     }
 }
