@@ -1,0 +1,560 @@
+/* === Special Effects CSS === */
+/* Animated section backgrounds */
+.about {
+    position: relative;
+    overflow: hidden;
+}
+
+.about::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(94, 59, 238, 0.1) 0%, rgba(134, 97, 255, 0.1) 100%);
+    z-index: -1;
+    animation: float 8s ease-in-out infinite;
+}
+
+.about::after {
+    content: '';
+    position: absolute;
+    bottom: -100px;
+    left: -100px;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(255, 190, 98, 0.1) 0%, rgba(255, 150, 60, 0.1) 100%);
+    z-index: -1;
+    animation: float 10s ease-in-out infinite reverse;
+}
+
+.skills {
+    position: relative;
+    overflow: hidden;
+}
+
+.skills::before {
+    content: '';
+    position: absolute;
+    top: 20%;
+    left: -50px;
+    width: 150px;
+    height: 150px;
+    border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+    background: linear-gradient(135deg, rgba(94, 59, 238, 0.1) 0%, rgba(134, 97, 255, 0.1) 100%);
+    z-index: -1;
+    animation: morphing 10s linear infinite alternate;
+}
+
+.skills::after {
+    content: '';
+    position: absolute;
+    bottom: 10%;
+    right: -50px;
+    width: 180px;
+    height: 180px;
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    background: linear-gradient(135deg, rgba(255, 190, 98, 0.1) 0%, rgba(255, 150, 60, 0.1) 100%);
+    z-index: -1;
+    animation: morphing 8s linear infinite alternate-reverse;
+}
+
+@keyframes morphing {
+    0% {
+        border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+    }
+    25% {
+        border-radius: 58% 42% 75% 25% / 76% 46% 54% 24%;
+    }
+    50% {
+        border-radius: 50% 50% 33% 67% / 55% 27% 73% 45%;
+    }
+    75% {
+        border-radius: 33% 67% 58% 42% / 63% 68% 32% 37%;
+    }
+    100% {
+        border-radius: 70% 30% 30% 70% / 70% 70% 30% 30%;
+    }
+}
+
+.contact {
+    position: relative;
+    overflow: hidden;
+}
+
+.contact::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(94, 59, 238, 0.03) 0%, rgba(134, 97, 255, 0.03) 100%);
+    z-index: -1;
+}
+
+.contact::after {
+    content: '';
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    bottom: -100px;
+    right: -100px;
+    background: radial-gradient(circle, rgba(94, 59, 238, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
+    border-radius: 50%;
+    z-index: -1;
+    animation: pulse 4s infinite;
+}
+
+/* Project card hover effects */
+.project-card {
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+                box-shadow 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.project-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(94, 59, 238, 0.2) 0%, rgba(134, 97, 255, 0.2) 100%);
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.project-card:hover {
+    transform: translateY(-15px) scale(1.03);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.project-card:hover::before {
+    opacity: 1;
+}
+
+.project-card .project-image img {
+    transition: transform 0.7s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+.project-card:hover .project-image img {
+    transform: scale(1.1);
+}
+
+.project-card .project-info h3 {
+    position: relative;
+    display: inline-block;
+}
+
+.project-card .project-info h3::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--primary-color);
+    transition: width 0.3s ease;
+}
+
+.project-card:hover .project-info h3::after {
+    width: 100%;
+}
+
+.project-card .project-tags span {
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.project-card:hover .project-tags span {
+    background-color: var(--primary-color);
+    color: white;
+    transform: translateY(-3px);
+}
+
+.project-card .project-overlay {
+    background: linear-gradient(to bottom, rgba(35, 46, 82, 0.8), rgba(94, 59, 238, 0.8));
+    transition: opacity 0.5s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+.project-card .project-links a {
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                background-color 0.3s ease;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.project-card:hover .project-links a {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.project-card:hover .project-links a:nth-child(1) {
+    transition-delay: 0.1s;
+}
+
+.project-card:hover .project-links a:nth-child(2) {
+    transition-delay: 0.2s;
+}
+
+/* Particle Background Effect */
+.particle-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Text gradient effect */
+.text-gradient {
+    background: linear-gradient(to right, var(--primary-color), #8661ff, var(--accent-color));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: gradientText 8s ease infinite;
+    background-size: 200% auto;
+}
+
+@keyframes gradientText {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Glitch text effect */
+.glitch {
+    position: relative;
+    color: var(--secondary-color);
+}
+
+.glitch::before,
+.glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.glitch::before {
+    left: 2px;
+    text-shadow: -2px 0 #ff00c1;
+    clip: rect(24px, 550px, 90px, 0);
+    animation: glitch-anim-1 5s infinite linear alternate-reverse;
+}
+
+.glitch::after {
+    left: -2px;
+    text-shadow: -2px 0 #00fff9;
+    clip: rect(85px, 550px, 140px, 0);
+    animation: glitch-anim-2 5s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-anim-1 {
+    0% {
+        clip: rect(41px, 9999px, 44px, 0);
+    }
+    5% {
+        clip: rect(62px, 9999px, 59px, 0);
+    }
+    10% {
+        clip: rect(15px, 9999px, 36px, 0);
+    }
+    15% {
+        clip: rect(118px, 9999px, 15px, 0);
+    }
+    20% {
+        clip: rect(5px, 9999px, 36px, 0);
+    }
+    25% {
+        clip: rect(94px, 9999px, 31px, 0);
+    }
+    30% {
+        clip: rect(53px, 9999px, 5px, 0);
+    }
+    35% {
+        clip: rect(83px, 9999px, 32px, 0);
+    }
+    40% {
+        clip: rect(76px, 9999px, 16px, 0);
+    }
+    45% {
+        clip: rect(37px, 9999px, 84px, 0);
+    }
+    50% {
+        clip: rect(71px, 9999px, 21px, 0);
+    }
+    55% {
+        clip: rect(56px, 9999px, 4px, 0);
+    }
+    60% {
+        clip: rect(103px, 9999px, 24px, 0);
+    }
+    65% {
+        clip: rect(1px, 9999px, 25px, 0);
+    }
+    70% {
+        clip: rect(26px, 9999px, 73px, 0);
+    }
+    75% {
+        clip: rect(44px, 9999px, 44px, 0);
+    }
+    80% {
+        clip: rect(114px, 9999px, 34px, 0);
+    }
+    85% {
+        clip: rect(8px, 9999px, 71px, 0);
+    }
+    90% {
+        clip: rect(15px, 9999px, 23px, 0);
+    }
+    95% {
+        clip: rect(64px, 9999px, 86px, 0);
+    }
+    100% {
+        clip: rect(113px, 9999px, 27px, 0);
+    }
+}
+
+@keyframes glitch-anim-2 {
+    0% {
+        clip: rect(32px, 9999px, 18px, 0);
+    }
+    5% {
+        clip: rect(83px, 9999px, 98px, 0);
+    }
+    10% {
+        clip: rect(92px, 9999px, 75px, 0);
+    }
+    15% {
+        clip: rect(57px, 9999px, 27px, 0);
+    }
+    20% {
+        clip: rect(34px, 9999px, 48px, 0);
+    }
+    25% {
+        clip: rect(15px, 9999px, 37px, 0);
+    }
+    30% {
+        clip: rect(114px, 9999px, 17px, 0);
+    }
+    35% {
+        clip: rect(95px, 9999px, 21px, 0);
+    }
+    40% {
+        clip: rect(43px, 9999px, 1px, 0);
+    }
+    45% {
+        clip: rect(139px, 9999px, 37px, 0);
+    }
+    50% {
+        clip: rect(16px, 9999px, 17px, 0);
+    }
+    55% {
+        clip: rect(41px, 9999px, 43px, 0);
+    }
+    60% {
+        clip: rect(35px, 9999px, 34px, 0);
+    }
+    65% {
+        clip: rect(24px, 9999px, 30px, 0);
+    }
+    70% {
+        clip: rect(114px, 9999px, 85px, 0);
+    }
+    75% {
+        clip: rect(32px, 9999px, 138px, 0);
+    }
+    80% {
+        clip: rect(98px, 9999px, 39px, 0);
+    }
+    85% {
+        clip: rect(76px, 9999px, 102px, 0);
+    }
+    90% {
+        clip: rect(129px, 9999px, 16px, 0);
+    }
+    95% {
+        clip: rect(114px, 9999px, 112px, 0);
+    }
+    100% {
+        clip: rect(23px, 9999px, 133px, 0);
+    }
+}
+
+/* Text typing effect */
+.typing-text {
+    overflow: hidden;
+    border-right: 2px solid var(--primary-color);
+    white-space: nowrap;
+    margin: 0 auto;
+    animation: 
+        typewriter 4s steps(40) 1s 1 normal both,
+        blinkCursor 0.75s step-end infinite;
+}
+
+/* 3D hover effect for cards */
+.card-3d {
+    transition: transform 0.5s ease;
+    transform-style: preserve-3d;
+}
+
+.card-3d:hover {
+    transform: rotateY(10deg) rotateX(10deg);
+}
+
+/* Parallax effect */
+.parallax {
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+/* Hover underline effect */
+.hover-underline {
+    position: relative;
+    display: inline-block;
+}
+
+.hover-underline::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    transform: scaleX(0);
+    height: 2px;
+    bottom: -5px;
+    left: 0;
+    background-color: var(--primary-color);
+    transform-origin: bottom right;
+    transition: transform 0.3s ease-out;
+}
+
+.hover-underline:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}
+
+/* Neon glow effect */
+.neon-glow {
+    text-shadow: 
+        0 0 5px rgba(94, 59, 238, 0.5),
+        0 0 10px rgba(94, 59, 238, 0.3),
+        0 0 15px rgba(94, 59, 238, 0.2),
+        0 0 20px rgba(94, 59, 238, 0.1);
+}
+
+/* Shiny button effect */
+.btn.shiny {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn.shiny::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        to bottom right,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.2) 50%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    transform: rotate(30deg);
+    animation: shinyAnimation 3s infinite;
+}
+
+@keyframes shinyAnimation {
+    0% {
+        transform: translateX(-100%) rotate(30deg);
+    }
+    100% {
+        transform: translateX(200%) rotate(30deg);
+    }
+}
+
+/* Magnetic effect for buttons (requires JS) */
+.magnetic-btn {
+    transition: transform 0.3s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+/* Image tilt effect (requires JS) */
+.tilt-image {
+    transition: transform 0.3s ease;
+}
+
+/* Water ripple effect (add to any element that needs click ripple) */
+.ripple {
+    position: relative;
+    overflow: hidden;
+}
+
+.ripple::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.3);
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    border-radius: 50%;
+    transform: scale(0);
+    opacity: 1;
+    animation: rippleEffect 0.6s linear;
+}
+
+@keyframes rippleEffect {
+    to {
+        transform: scale(2.5);
+        opacity: 0;
+    }
+}
+
+/* SVG morph animation (requires SVG in HTML) - example CSS only */
+.morph-svg path {
+    transition: d 0.5s ease;
+}
+
+.morph-svg:hover path {
+    d: path("M10,10 C50,30 90,30 130,10 C160,0 180,20 180,50 C180,80 150,95 130,90 C90,80 50,80 10,90 C-10,95 -10,70 10,50 C30,30 50,20 10,10 Z");
+}
+
+/* Paper fold corner effect */
+.paper-fold {
+    position: relative;
+}
+
+.paper-fold::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-style: solid;
+    border-width: 0 50px 50px 0;
+    border-color: transparent var(--primary-color) transparent transparent;
+    transition: var(--transition);
+}
+
+.paper-fold:hover::before {
+    border-width: 0 70px 70px 0;
+}
