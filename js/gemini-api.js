@@ -41,6 +41,12 @@ async function sendMessageToGemini(message) {
         // Prepare conversation for API request (limit to last 10 messages to avoid token limits)
         const recentConversation = conversationHistory.slice(-10);
         
+        // Check if API key is available or valid
+        if (!GEMINI_API_KEY || GEMINI_API_KEY === 'YOUR_GEMINI_API_KEY') {
+            console.warn('Gemini API key not set or invalid. Using fallback response.');
+            return getFallbackResponse(message);
+        }
+        
         const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
             method: 'POST',
             headers: {
@@ -57,6 +63,10 @@ async function sendMessageToGemini(message) {
             })
         });
 
+        if (!response.ok) {
+            throw new Error(`API request failed with status: ${response.status}`);
+        }
+
         const data = await response.json();
         
         // Extract the text from the response
@@ -72,11 +82,28 @@ async function sendMessageToGemini(message) {
             return responseText;
         } else {
             console.error('Unexpected response structure:', data);
-            return "I'm sorry, I couldn't process your request. Please try again.";
+            return getFallbackResponse(message);
         }
     } catch (error) {
         console.error('Error calling Gemini API:', error);
-        return "I'm sorry, there was an error processing your request. Please try again later.";
+        return getFallbackResponse(message);
+    }
+}
+
+// Function to get a fallback response when API fails
+function getFallbackResponse(message) {
+    message = message.toLowerCase();
+    
+    if (message.includes('portfolio') || message.includes('project')) {
+        return "I've worked on several projects including web applications, mobile apps, and AI systems. You can check them out in the Projects section!";
+    } else if (message.includes('skill') || message.includes('know')) {
+        return "I'm skilled in web development (HTML, CSS, JavaScript), backend development, and have experience with various frameworks. Check out the Skills section for more details!";
+    } else if (message.includes('contact') || message.includes('hire') || message.includes('email')) {
+        return "You can contact me through the Contact form on this website, or chat with me directly on Zalo. Just click the 'Chat on Zalo' button!";
+    } else if (message.includes('hello') || message.includes('hi') || message.includes('hey')) {
+        return "Hello! How can I assist you today?";
+    } else {
+        return "Thanks for your message. Would you like to know more about my portfolio, skills, or how to contact me?";
     }
 }
 

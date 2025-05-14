@@ -857,6 +857,52 @@ header.scrolled {
     resize: none;
 }
 
+/* Form status styles */
+.form-status {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 4px;
+    text-align: center;
+    font-weight: 500;
+    display: none;
+}
+
+.form-status.sending {
+    display: block;
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+.form-status.success {
+    display: block;
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.form-status.error {
+    display: block;
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.newsletter-status {
+    margin-top: 10px;
+    padding: 8px;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.newsletter-status.success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.newsletter-status.error {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
 /* ====== Footer ====== */
 footer {
     background-color: var(--dark-background);

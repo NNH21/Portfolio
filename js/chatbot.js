@@ -17,7 +17,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Show welcome message bubble
     showWelcomeBubble();
-      // Add event listeners for suggested questions
+    
+    // Add event listeners for suggested questions
     setTimeout(() => {
         document.querySelectorAll('.suggested-question').forEach(question => {
             question.addEventListener('click', function() {
@@ -48,12 +49,13 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Create chatbot UI elements
-function createChatbotElements() {    // Create chat bubble
+function createChatbotElements() {
+    // Create chat bubble
     const chatBubble = document.createElement('div');
     chatBubble.className = 'chat-bubble';
     chatBubble.innerHTML = `
         <div class="chat-icon">
-            <img src="images/chatbot/chatbot-icon-color.svg" alt="AI Assistant">
+            <img src="images/chatbot/chatbot-icon-color.svg" alt="AI Assistant" onerror="this.src='images/personal/my-photo.jpg'; this.onerror=null;">
         </div>
         <div class="notification-badge">1</div>
     `;
@@ -61,22 +63,27 @@ function createChatbotElements() {    // Create chat bubble
     
     // Create chat window
     const chatWindow = document.createElement('div');
-    chatWindow.className = 'chat-window';    chatWindow.innerHTML = `
+    chatWindow.className = 'chat-window';
+    chatWindow.innerHTML = `
         <div class="chat-header">
             <div class="chat-title">
-                <img src="images/chatbot/chatbot-icon.svg" alt="AI Assistant">                <span>AI Assistant</span>
-            </div>            <div class="chat-actions">
+                <img src="images/chatbot/chatbot-icon.svg" alt="AI Assistant" onerror="this.src='images/personal/my-photo.jpg'; this.onerror=null;">
+                <span>AI Assistant</span>
+            </div>
+            <div class="chat-actions">
                 <button class="clear-history-btn" title="Clear Chat History"><i class="fas fa-trash-alt"></i></button>
                 <button class="minimize-btn"><i class="fas fa-minus"></i></button>
                 <button class="close-btn"><i class="fas fa-times"></i></button>
             </div>
-        </div>        <div class="chat-body">
+        </div>
+        <div class="chat-body">
             <div class="messages-container">
                 <div class="message bot-message">
                     <div class="message-content">${CHATBOT_CONFIG.welcomeMessage}</div>
                 </div>
                 ${generateSuggestedQuestions()}
-            </div>        </div>
+            </div>
+        </div>
         <div class="chat-options">
             ${generateOptionButtons()}
         </div>
@@ -126,17 +133,150 @@ let chatElements = {
 function initChatbot() {
     chatElements.chatBubble = document.querySelector('.chat-bubble');
     chatElements.chatWindow = document.querySelector('.chat-window');
+    chatElements.messagesContainer = document.querySelector('.messages-container');
+    chatElements.chatInput = document.querySelector('.chat-input');
+    
     const minimizeBtn = document.querySelector('.minimize-btn');
     const closeBtn = document.querySelector('.close-btn');
     const clearHistoryBtn = document.querySelector('.clear-history-btn');
-    chatElements.chatInput = document.querySelector('.chat-input');
     const sendBtn = document.querySelector('.send-btn');
     const optionBtns = document.querySelectorAll('.option-btn');
     
-    // Store references to elements in the global object
-    chatElements.messagesContainer = document.querySelector('.messages-container');
+    // Toggle chat window when bubble is clicked
+    chatElements.chatBubble.addEventListener('click', () => {
+        chatElements.chatWindow.classList.toggle('active');
+        chatElements.chatBubble.classList.toggle('hidden');
+        
+        // Remove notification badge when chat is opened
+        const badge = chatElements.chatBubble.querySelector('.notification-badge');
+        if (badge) {
+            badge.style.display = 'none';
+        }
+        
+        // Load chat history when opening
+        if (chatElements.chatWindow.classList.contains('active') && 
+            localStorage.getItem('chatHistory') && 
+            !chatElements.messagesContainer.querySelector('.chat-separator')) {
+            loadChatHistory();
+        }
+    });
+    
+    // Remove auto-open chat after 5 seconds
+    // Only keep welcome bubble
+    
+    // Minimize chat window
+    minimizeBtn.addEventListener('click', () => {
+        chatElements.chatWindow.classList.remove('active');
+        chatElements.chatBubble.classList.remove('hidden');
+    });
+    
+    // Close chat window
+    closeBtn.addEventListener('click', () => {
+        chatElements.chatWindow.classList.remove('active');
+        chatElements.chatBubble.classList.remove('hidden');
+    });
+    
+    // Clear chat history
+    if (clearHistoryBtn) {
+        clearHistoryBtn.addEventListener('click', () => {
+            // Clear chat history from localStorage
+            localStorage.removeItem('chatHistory');
+            
+            // Clear all messages except the welcome message
+            while (chatElements.messagesContainer.childNodes.length > 1) {
+                chatElements.messagesContainer.removeChild(chatElements.messagesContainer.lastChild);
+            }
+            
+            // Also clear Gemini API conversation history if available
+            if (window.geminiAPI && typeof window.geminiAPI.clearHistory === 'function') {
+                window.geminiAPI.clearHistory();
+            }
+            
+            // Add fresh welcome message
+            addMessage(CHATBOT_CONFIG.welcomeMessage, 'bot', false);
+            
+            // Show confirmation
+            const confirmationElement = document.createElement('div');
+            confirmationElement.className = 'chat-separator';
+            confirmationElement.textContent = 'Chat history cleared';
+            chatElements.messagesContainer.appendChild(confirmationElement);
+            
+            // Remove confirmation after 3 seconds
+            setTimeout(() => {
+                if (confirmationElement.parentNode) {
+                    confirmationElement.parentNode.removeChild(confirmationElement);
+                }
+            }, 3000);
+        });
+    }
+    
+    // Send message when send button is clicked
+    sendBtn.addEventListener('click', () => {
+        sendMessage();
+    });
+    
+    // Send message when Enter key is pressed
+    chatElements.chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
+    
+    // Handle predefined option buttons
+    optionBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const option = btn.getAttribute('data-option');
+            if (option === 'zalo') {
+                // Open Zalo chat with the website owner
+                window.open(`https://zalo.me/${CHATBOT_CONFIG.zaloId}`, '_blank');
+            } else {
+                // Handle other predefined options
+                const optionMessages = {
+                    'portfolio': 'I\'d like to know more about your portfolio',
+                    'skills': 'What skills do you have?',
+                    'contact': 'How can I contact you?'
+                };
+                
+                if (optionMessages[option]) {
+                    // Add user message
+                    addMessage(optionMessages[option], 'user');
+                    
+                    // Process the message and get AI response
+                    processMessage(optionMessages[option]);
+                }
+            }
+        });
+    });
+}
 
-// Function to add message to chat - defined in global scope
+// Function to send user message
+function sendMessage() {
+    if (!chatElements.chatInput) {
+        console.error('Chat input not found');
+        return;
+    }
+    
+    const message = chatElements.chatInput.value.trim();
+    
+    if (message) {
+        // Add user message to chat
+        addMessage(message, 'user');
+        
+        // Clear input
+        chatElements.chatInput.value = '';
+        
+        // Process the message and get AI response
+        processMessage(message);
+        
+        // Remove suggested questions if they still exist
+        const suggestedQuestionsContainer = document.querySelector('.suggested-questions');
+        if (suggestedQuestionsContainer) {
+            suggestedQuestionsContainer.remove();
+        }
+    }
+}
+
+// Function to add message to chat
 function addMessage(message, sender, saveToHistory = true) {
     if (!chatElements.messagesContainer) {
         chatElements.messagesContainer = document.querySelector('.messages-container');
@@ -164,7 +304,7 @@ function addMessage(message, sender, saveToHistory = true) {
     }
 }
 
-// Function to process message and get AI response - defined in global scope
+// Function to process message and get AI response
 async function processMessage(message) {
     if (!chatElements.messagesContainer) {
         chatElements.messagesContainer = document.querySelector('.messages-container');
@@ -193,7 +333,7 @@ async function processMessage(message) {
     try {
         // Try to use Gemini API if available
         let botResponse;
-        if (window.geminiAPI && window.geminiAPI.sendMessage) {
+        if (window.geminiAPI && typeof window.geminiAPI.sendMessage === 'function') {
             botResponse = await window.geminiAPI.sendMessage(message);
         } else {
             // Fall back to default responses if API is not available
@@ -230,224 +370,6 @@ function getDefaultResponse(message) {
         return "Hello! How can I assist you today?";
     } else {
         return "Thanks for your message. Would you like to know more about my portfolio, skills, or how to contact me?";
-    }
-}    // Toggle chat window when bubble is clicked
-    chatElements.chatBubble.addEventListener('click', () => {
-        chatElements.chatWindow.classList.toggle('active');
-        chatElements.chatBubble.classList.toggle('hidden');
-        
-        // Remove notification badge when chat is opened
-        const badge = chatElements.chatBubble.querySelector('.notification-badge');
-        if (badge) {
-            badge.style.display = 'none';
-        }
-        
-        // Load chat history when opening
-        if (chatElements.chatWindow.classList.contains('active') && 
-            localStorage.getItem('chatHistory') && 
-            !chatElements.messagesContainer.querySelector('.chat-separator')) {
-            loadChatHistory();
-        }
-    });
-    
-    // Auto-open chat after 5 seconds (only on first visit)
-    if (!sessionStorage.getItem('chatbotShown')) {
-        setTimeout(() => {
-            chatElements.chatWindow.classList.add('active');
-            chatElements.chatBubble.classList.add('hidden');
-            
-            // Remove notification badge
-            const badge = chatElements.chatBubble.querySelector('.notification-badge');
-            if (badge) {
-                badge.style.display = 'none';
-            }
-            
-            // Mark as shown
-            sessionStorage.setItem('chatbotShown', 'true');
-        }, 5000);
-    }
-    
-    // Minimize chat window
-    minimizeBtn.addEventListener('click', () => {
-        chatElements.chatWindow.classList.remove('active');
-        chatElements.chatBubble.classList.remove('hidden');
-    });
-      // Close chat window
-    closeBtn.addEventListener('click', () => {
-        chatElements.chatWindow.classList.remove('active');
-        chatElements.chatBubble.classList.remove('hidden');
-    });
-      // Clear chat history
-    if (clearHistoryBtn) {
-        clearHistoryBtn.addEventListener('click', () => {
-            // Clear chat history from localStorage
-            localStorage.removeItem('chatHistory');
-            
-            // Clear all messages except the welcome message
-            while (chatElements.messagesContainer.childNodes.length > 1) {
-                chatElements.messagesContainer.removeChild(chatElements.messagesContainer.lastChild);
-            }
-            
-            // Also clear Gemini API conversation history if available
-            if (window.geminiAPI && typeof window.geminiAPI.clearHistory === 'function') {
-                window.geminiAPI.clearHistory();
-            }
-            
-            // Add fresh welcome message
-            addMessage(CHATBOT_CONFIG.welcomeMessage, 'bot', false);
-            
-            // Show confirmation
-            const confirmationElement = document.createElement('div');
-            confirmationElement.className = 'chat-separator';
-            confirmationElement.textContent = 'Chat history cleared';
-            chatElements.messagesContainer.appendChild(confirmationElement);
-            
-            // Remove confirmation after 3 seconds
-            setTimeout(() => {
-                if (confirmationElement.parentNode) {
-                    confirmationElement.parentNode.removeChild(confirmationElement);
-                }
-            }, 3000);
-        });
-    }
-      // Send message when send button is clicked
-    sendBtn.addEventListener('click', () => {
-        sendMessage();
-    });
-    
-    // Send message when Enter key is pressed
-    chatElements.chatInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            sendMessage();
-        }
-    });
-    
-    // Handle predefined option buttons
-    optionBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const option = btn.getAttribute('data-option');
-              if (option === 'zalo') {
-                // Open Zalo chat with the website owner
-                window.open(`https://zalo.me/${CHATBOT_CONFIG.zaloId}`, '_blank');
-            } else {
-                // Handle other predefined options
-                const optionMessages = {
-                    'portfolio': 'I\'d like to know more about your portfolio',
-                    'skills': 'What skills do you have?',
-                    'contact': 'How can I contact you?'
-                };
-                
-                if (optionMessages[option]) {
-                    // Add user message
-                    addMessage(optionMessages[option], 'user');
-                    
-                    // Process the message and get AI response
-                    processMessage(optionMessages[option]);
-                }
-            }
-        });
-    });
-      // Function to send user message
-    function sendMessage() {
-        if (!chatElements.chatInput) {
-            console.error('Chat input not found');
-            return;
-        }
-        
-        const message = chatElements.chatInput.value.trim();
-        
-        if (message) {
-            // Add user message to chat
-            addMessage(message, 'user');
-            
-            // Clear input
-            chatElements.chatInput.value = '';
-            
-            // Process the message and get AI response
-            processMessage(message);
-            
-            // Remove suggested questions if they still exist
-            const suggestedQuestionsContainer = document.querySelector('.suggested-questions');
-            if (suggestedQuestionsContainer) {
-                suggestedQuestionsContainer.remove();
-            }
-            
-            // Save chat history (optional)
-            saveChatHistory(message, 'user');
-        }
-    }
-    
-    // Function to add message to chat
-    function addMessage(message, sender) {
-        const messageElement = document.createElement('div');
-        messageElement.className = `message ${sender}-message`;
-        messageElement.innerHTML = `
-            <div class="message-content">${message}</div>
-        `;
-        
-        messagesContainer.appendChild(messageElement);
-        
-        // Scroll to bottom of chat
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }
-      // Function to process message and get AI response
-    async function processMessage(message) {
-        // Show typing indicator
-        const typingIndicator = document.createElement('div');
-        typingIndicator.className = 'message bot-message typing';
-        typingIndicator.innerHTML = `
-            <div class="message-content">
-                <div class="typing-indicator">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-            </div>
-        `;
-        messagesContainer.appendChild(typingIndicator);
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        
-        try {
-            // Try to use Gemini API if available
-            let botResponse;
-            if (window.geminiAPI && window.geminiAPI.sendMessage) {
-                botResponse = await window.geminiAPI.sendMessage(message);
-            } else {
-                // Fall back to default responses if API is not available
-                botResponse = getDefaultResponse(message);
-            }
-            
-            // Remove typing indicator
-            messagesContainer.removeChild(typingIndicator);
-            
-            // Add bot response
-            addMessage(botResponse, 'bot');
-        } catch (error) {
-            console.error('Error processing message:', error);
-            
-            // Remove typing indicator
-            messagesContainer.removeChild(typingIndicator);
-            
-            // Add fallback response
-            addMessage("I'm sorry, I encountered an error. Please try again.", 'bot');
-        }
-    }
-    
-    // Function to get default response (fallback until Gemini API is integrated)
-    function getDefaultResponse(message) {
-        message = message.toLowerCase();
-        
-        if (message.includes('portfolio') || message.includes('project')) {
-            return "I've worked on several projects including web applications, mobile apps, and AI systems. You can check them out in the Projects section!";
-        } else if (message.includes('skill') || message.includes('know')) {
-            return "I'm skilled in web development (HTML, CSS, JavaScript), backend development, and have experience with various frameworks. Check out the Skills section for more details!";
-        } else if (message.includes('contact') || message.includes('hire') || message.includes('email')) {
-            return "You can contact me through the Contact form on this website, or chat with me directly on Zalo. Just click the 'Chat on Zalo' button!";
-        } else if (message.includes('hello') || message.includes('hi') || message.includes('hey')) {
-            return "Hello! How can I assist you today?";
-        } else {
-            return "Thanks for your message. Would you like to know more about my portfolio, skills, or how to contact me?";
-        }
     }
 }
 

@@ -2,16 +2,16 @@
 
 const CHATBOT_CONFIG = {
     // Your Zalo ID - replace with your actual Zalo ID
-    zaloId: 'your-zalo-id',
+    zaloId: '0337982569',
     
     // Gemini API key - replace with your actual API key
     geminiApiKey: 'AIzaSyC-XhSIu3F_vKL9DVHtwv6ZSYsqbEyWhck',
     
     // Initial greeting message
-    welcomeMessage: "Hello! I'm your AI assistant. How can I help you today?",
+    welcomeMessage: "Hello! I'm your Mis assistant. How can I help you today?",
     
     // Chatbot name
-    botName: "AI Assistant",
+    botName: "Trợ lý Mis",
     
     // Quick reply options
     quickReplyOptions: [
