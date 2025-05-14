@@ -4,37 +4,53 @@
 @media (max-width: 480px) {
     body {
         font-size: 14px;
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
     }
     
     p {
-        font-size: 0.95rem;
-        line-height: 1.6;
+        font-size: 0.9rem;
+        line-height: 1.5;
+        margin-bottom: 10px;
     }
     
     h1 {
-        font-size: 1.8rem;
+        font-size: 1.6rem;
+        line-height: 1.3;
     }
     
     h2 {
-        font-size: 1.5rem;
+        font-size: 1.4rem;
+        line-height: 1.3;
     }
     
     h3 {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
+        line-height: 1.3;
     }
     
     .btn {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         padding: 8px 12px;
+        min-height: 40px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
     }
     
     /* Reduce spacing */
     section {
-        padding: 35px 0;
+        padding: 30px 0;
     }
     
     .section-header {
         margin-bottom: 20px;
+    }
+    
+    /* Fix container overflow */
+    .container, section, .hero, .about, .skills, .projects, .contact {
+        overflow-x: hidden;
+        width: 100%;
     }
 }
 
@@ -253,8 +269,8 @@
 /* Touch enhancements for mobile */
 .touch-active {
     opacity: 0.7 !important;
-    transform: scale(0.95);
-    transition: transform 0.2s ease;
+    transform: scale(0.95) !important;
+    transition: transform 0.2s ease !important;
 }
 
 /* Support for project image zooming on mobile */
@@ -352,4 +368,58 @@
     .particle-background {
         opacity: 0.2;
     }
+}
+
+/* Performance optimizations for mobile */
+.low-performance * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+}
+
+.low-performance .animate,
+.low-performance .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+}
+
+.low-performance .particle-background {
+    display: none !important;
+}
+
+.low-bandwidth img:not([importance="high"]) {
+    filter: blur(0px) !important;
+    transform: scale(1) !important;
+}
+
+.orientation-changing {
+    visibility: hidden;
+}
+
+.orientation-changing::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #fff;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    visibility: visible;
+}
+
+/* Fix scroll performance */
+.is-scrolling * {
+    animation-play-state: paused !important;
+    transition: none !important;
+}
+
+.is-scrolling .animate-float,
+.is-scrolling .animate-pulse,
+.is-scrolling .animate-bounce {
+    animation: none !important;
 }

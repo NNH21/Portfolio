@@ -19,12 +19,18 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Improve error handling
         improveErrorHandling();
+        
+        // Apply performance optimizations
+        optimizeImagesForPerformance();
     }
     
     // Listen for orientation changes
     window.addEventListener('orientationchange', function() {
-        fixImageContainerHeights();
-        fixMobileAspectRatios();
+        // Small delay to ensure the orientation change completes
+        setTimeout(() => {
+            fixImageContainerHeights();
+            fixMobileAspectRatios();
+        }, 300);
     });
     
     /**
@@ -35,14 +41,17 @@ document.addEventListener('DOMContentLoaded', function() {
         const heroImage = document.querySelector('.hero-image');
         if (heroImage) {
             heroImage.style.height = 'auto';
-            heroImage.style.maxHeight = '300px';
+            heroImage.style.maxHeight = '250px';
+            heroImage.style.margin = '0 auto 20px';
             
             const img = heroImage.querySelector('img');
             if (img) {
                 img.style.width = '100%';
-                img.style.height = '100%';
+                img.style.height = 'auto';
+                img.style.maxHeight = '250px';
                 img.style.objectFit = 'cover';
                 img.style.objectPosition = 'center top';
+                img.style.borderRadius = '8px';
             }
         }
         
@@ -195,5 +204,68 @@ document.addEventListener('DOMContentLoaded', function() {
                 img.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 300 225"%3E%3Crect width="300" height="225" fill="%23f0f0f0"/%3E%3Ctext x="150" y="112" font-family="Arial" font-size="14" text-anchor="middle" fill="%23999"%3EProject Image%3C/text%3E%3C/svg%3E';
             }
         }
+    }
+    
+    /**
+     * Optimize images for better performance on mobile
+     */
+    function optimizeImagesForPerformance() {
+        const allImages = document.querySelectorAll('img');
+        
+        allImages.forEach(img => {
+            // Add loading attribute for browsers that support it
+            if (!img.hasAttribute('loading') && !img.hasAttribute('importance')) {
+                img.setAttribute('loading', 'lazy');
+            }
+            
+            // Fix common image rendering issues on mobile
+            img.style.backfaceVisibility = 'hidden';
+            
+            // Add proper error handling
+            if (!img.hasAttribute('onerror')) {
+                img.onerror = function() {
+                    this.onerror = null;
+                    
+                    // Try to determine image type to provide appropriate fallback
+                    let fallbackSrc = 'images/personal/placeholder.jpg';
+                    
+                    if (this.src.includes('projects')) {
+                        fallbackSrc = 'images/projects/placeholder.png';
+                    } else if (this.src.includes('icons')) {
+                        fallbackSrc = 'images/icons/placeholder.png';
+                    }
+                    
+                    // Set fallback image if not already the fallback
+                    if (!this.src.includes('placeholder')) {
+                        this.src = fallbackSrc;
+                    }
+                    
+                    // Add error class
+                    this.classList.add('img-error');
+                };
+            }
+            
+            // Optimize image sizes on mobile
+            if (window.innerWidth < 600) {
+                // For smaller screens, use smaller images if possible
+                const currentSrc = img.src;
+                
+                // Only optimize non-placeholder images
+                if (!currentSrc.includes('placeholder')) {
+                    // If a mobile version exists, use it
+                    if (currentSrc.includes('.png') || currentSrc.includes('.jpg') || currentSrc.includes('.jpeg')) {
+                        const fileExt = currentSrc.substring(currentSrc.lastIndexOf('.'));
+                        const mobileSrc = currentSrc.replace(fileExt, '-mobile' + fileExt);
+                        
+                        // Try to preload the mobile version to check if it exists
+                        const preloadImg = new Image();
+                        preloadImg.onload = function() {
+                            img.src = mobileSrc; // Use mobile version if it exists
+                        };
+                        preloadImg.src = mobileSrc;
+                    }
+                }
+            }
+        });
     }
 });

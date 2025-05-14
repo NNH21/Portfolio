@@ -23,6 +23,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Apply emergency fixes if needed
     applyEmergencyFixes();
     
+    // Check for scrolling performance issues
+    checkScrollingPerformance();
+    
     /**
      * Log mobile device information for debugging
      */
@@ -34,7 +37,12 @@ document.addEventListener('DOMContentLoaded', function() {
             devicePixelRatio: window.devicePixelRatio,
             viewportWidth: window.innerWidth,
             viewportHeight: window.innerHeight,
-            orientation: window.screen.orientation ? window.screen.orientation.type : 'unknown'
+            orientation: window.screen.orientation ? window.screen.orientation.type : 'unknown',
+            connection: navigator.connection ? 
+                {
+                    effectiveType: navigator.connection.effectiveType,
+                    saveData: navigator.connection.saveData
+                } : 'unavailable'
         };
         
         console.log('Mobile Device Info:', deviceInfo);
@@ -268,6 +276,131 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.warn('Image still not loaded after 3s:', img.src);
                 fixBrokenImage(img);
             }
+        });
+    }
+    
+    /**
+     * Check for scrolling performance issues
+     */
+    function checkScrollingPerformance() {
+        // Set up performance markers
+        let lastScrollTime = 0;
+        let scrollFrames = 0;
+        let scrollLags = 0;
+        
+        // Detect choppy scrolling
+        window.addEventListener('scroll', function() {
+            const now = performance.now();
+            
+            // Calculate time since last scroll
+            if (lastScrollTime > 0) {
+                const delta = now - lastScrollTime;
+                
+                // If time between frames is high, it may indicate lag
+                if (delta > 30) { // Normal is 16.7ms for 60fps
+                    scrollLags++;
+                    
+                    // Apply scroll optimizations if lag is detected
+                    if (scrollLags > 5) {
+                        optimizeScrollPerformance();
+                    }
+                }
+                
+                scrollFrames++;
+            }
+            
+            lastScrollTime = now;
+        }, {passive: true});
+        
+        // Analyze and fix layout after load
+        window.addEventListener('load', function() {
+            fixLayoutIssues();
+        });
+    }
+    
+    /**
+     * Fix any layout issues detected
+     */
+    function fixLayoutIssues() {
+        // Check for content wider than viewport
+        const bodyWidth = document.body.scrollWidth;
+        const viewportWidth = window.innerWidth;
+        
+        if (bodyWidth > viewportWidth) {
+            console.log('Content overflow detected - fixing...');
+            
+            // Find possible culprits
+            const possibleCulprits = document.querySelectorAll('img, video, iframe, div, table');
+            
+            possibleCulprits.forEach(element => {
+                const rect = element.getBoundingClientRect();
+                
+                // If element is wider than viewport
+                if (rect.width > viewportWidth) {
+                    console.log('Fixed oversized element:', element);
+                    element.style.maxWidth = '100%';
+                    element.style.width = 'auto';
+                    element.style.height = 'auto';
+                    element.style.overflowX = 'hidden';
+                }
+            });
+            
+            // Also fix any container that might be causing overflow
+            document.querySelectorAll('section, .container').forEach(container => {
+                container.style.maxWidth = '100%';
+                container.style.overflowX = 'hidden';
+            });
+        }
+    }
+    
+    /**
+     * Optimize scroll performance
+     */
+    function optimizeScrollPerformance() {
+        console.log('Optimizing scroll performance');
+        
+        // Reduce visual complexity during scroll
+        let scrollTimeout;
+        let isScrolling = false;
+        
+        window.addEventListener('scroll', function() {
+            if (!isScrolling) {
+                isScrolling = true;
+                document.body.classList.add('is-scrolling');
+            }
+            
+            clearTimeout(scrollTimeout);
+            
+            scrollTimeout = setTimeout(function() {
+                isScrolling = false;
+                document.body.classList.remove('is-scrolling');
+            }, 100);
+        }, {passive: true});
+        
+        // Add style to reduce animations during scroll
+        const style = document.createElement('style');
+        style.textContent = `
+            .is-scrolling * {
+                animation-duration: 0.001s !important;
+                transition-duration: 0.001s !important;
+            }
+            
+            .is-scrolling .animate {
+                opacity: 1 !important;
+                transform: none !important; 
+            }
+            
+            .is-scrolling .particle-background {
+                opacity: 0.1;
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Disable heavy animations
+        const heavyAnimations = document.querySelectorAll('.particle-background, .animate-float');
+        heavyAnimations.forEach(element => {
+            element.style.animationDuration = '0.1s';
+            element.style.transitionDuration = '0.1s';
         });
     }
 });
