@@ -1,0 +1,110 @@
+/* ===== Responsive Styles ===== */
+
+/* Make images responsive */
+img, .hero-image img, .about-image img, .project-image img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Responsive container */
+.container, section, .about-content, .skills-content, .projects-container, .contact-content {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+}
+
+/* Responsive navigation */
+.hamburger {
+    display: none;
+    cursor: pointer;
+}
+
+@media (max-width: 991px) {
+    .nav-links {
+        position: fixed;
+        right: 0;
+        top: 0;
+        height: 100vh;
+        width: 220px;
+        background: #fff;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        padding: 80px 24px 24px 24px;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+        box-shadow: -2px 0 8px rgba(0,0,0,0.05);
+        z-index: 1000;
+    }
+    .nav-links.active {
+        transform: translateX(0);
+    }
+    .nav-links li {
+        margin: 18px 0;
+    }
+    .hamburger {
+        display: block;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-content h1, .hero-content h2 {
+        font-size: 2rem;
+    }
+    .hero-content p {
+        font-size: 1rem;
+    }
+    .about-content, .skills-content, .projects-container, .contact-content {
+        flex-direction: column !important;
+        gap: 32px;
+    }
+    .about-image, .hero-image {
+        margin: 0 auto;
+        max-width: 300px;
+    }
+    .section-header h2 {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .navbar, .footer-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .logo {
+        font-size: 1.3rem;
+    }
+    .hero-content h1, .hero-content h2 {
+        font-size: 1.2rem;
+    }
+    .section-header h2 {
+        font-size: 1.1rem;
+    }
+    .project-card, .skill-card {
+        min-width: 100%;
+        max-width: 100%;
+    }
+    .about-image, .hero-image {
+        max-width: 180px;
+    }
+    .footer-bottom {
+        font-size: 0.9rem;
+    }
+}
+
+/* Ensure text is readable */
+body, p, li, a, h1, h2, h3, h4, h5, h6 {
+    word-break: break-word;
+    line-height: 1.5;
+}
+
+/* Hide scroll-down on small screens */
+@media (max-width: 600px) {
+    .scroll-down {
+        display: none;
+    }
+}
