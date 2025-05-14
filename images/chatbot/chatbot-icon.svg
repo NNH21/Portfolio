@@ -1,0 +1,8 @@
+<!-- Chatbot icon SVG - placeholder until you add a real image -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <circle cx="32" cy="32" r="32" fill="#ffffff"/>
+  <path d="M32 14c-9.9 0-18 8.1-18 18s8.1 18 18 18 18-8.1 18-18-8.1-18-18-18zm0 33c-8.3 0-15-6.7-15-15s6.7-15 15-15 15 6.7 15 15-6.7 15-15 15z" fill="#5e3bee"/>
+  <circle cx="24" cy="27" r="3" fill="#5e3bee"/>
+  <circle cx="40" cy="27" r="3" fill="#5e3bee"/>
+  <path d="M32 37c-4.4 0-8-3.6-8-8h3c0 2.8 2.2 5 5 5s5-2.2 5-5h3c0 4.4-3.6 8-8 8z" fill="#5e3bee"/>
+</svg>
