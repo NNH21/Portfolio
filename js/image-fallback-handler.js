@@ -45,8 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-    
-    /**
+      /**
      * Handle image loading errors with appropriate fallbacks
      */
     function handleImageError(img) {
@@ -61,27 +60,85 @@ document.addEventListener('DOMContentLoaded', function() {
         const imgClasses = img.className || '';
         const imgParent = img.parentElement ? img.parentElement.className || '' : '';
         
+        // Get base path for absolute image references
+        const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/')) || '';
+        
+        // Check if we're on mobile to adjust placeholder size
+        const isMobile = window.innerWidth <= 768;
+        const width = isMobile ? 300 : 600;
+        const height = isMobile ? 200 : 400;
+        
         // Fallback based on context
         if (imgParent.includes('project-image') || img.closest('.project-image')) {
-            img.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400"%3E%3Crect width="100%25" height="100%25" fill="%23f0f0f0"/%3E%3Ctext x="300" y="200" font-family="Arial" font-size="20" text-anchor="middle" fill="%23999999"%3EProject Image%3C/text%3E%3C/svg%3E';
+            // Try to load from images folder first
+            img.src = `${basePath}/images/projects/placeholder.png`;
+            
+            // Add a data attribute for monitoring
+            img.setAttribute('data-fallback-type', 'project');
+            
+            // If this fails, set a backup SVG fallback
+            img.onerror = function() {
+                this.onerror = null; // Prevent infinite loop
+                this.src = `data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"%3E%3Crect width="100%25" height="100%25" fill="%23f0f0f0"/%3E%3Ctext x="${width/2}" y="${height/2}" font-family="Arial" font-size="${isMobile ? 14 : 20}" text-anchor="middle" fill="%23999999"%3EProject Image%3C/text%3E%3C/svg%3E`;
+            };
         } else if (imgParent.includes('about-image') || img.closest('.about-image')) {
-            img.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 600 600"%3E%3Crect width="100%25" height="100%25" fill="%23f0f0f0"/%3E%3Ctext x="300" y="300" font-family="Arial" font-size="20" text-anchor="middle" fill="%23999999"%3EAbout Image%3C/text%3E%3C/svg%3E';
+            img.src = `${basePath}/images/personal/placeholder.jpg`;
+            img.setAttribute('data-fallback-type', 'about');
+            
+            img.onerror = function() {
+                this.onerror = null;
+                this.src = `data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${width}" viewBox="0 0 ${width} ${width}"%3E%3Crect width="100%25" height="100%25" fill="%23f0f0f0"/%3E%3Ctext x="${width/2}" y="${width/2}" font-family="Arial" font-size="${isMobile ? 14 : 20}" text-anchor="middle" fill="%23999999"%3EAbout Image%3C/text%3E%3C/svg%3E`;
+            };
         } else if (imgParent.includes('hero-image') || img.closest('.hero-image')) {
-            img.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600"%3E%3Crect width="100%25" height="100%25" fill="%23f0f0f0"/%3E%3Ctext x="400" y="300" font-family="Arial" font-size="24" text-anchor="middle" fill="%23999999"%3EProfile Image%3C/text%3E%3C/svg%3E';
+            img.src = `${basePath}/images/personal/placeholder.jpg`;
+            img.setAttribute('data-fallback-type', 'profile');
+            
+            img.onerror = function() {
+                this.onerror = null;
+                this.src = `data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="${width*1.5}" height="${width}" viewBox="0 0 ${width*1.5} ${width}"%3E%3Crect width="100%25" height="100%25" fill="%23f0f0f0"/%3E%3Ctext x="${width*0.75}" y="${width/2}" font-family="Arial" font-size="${isMobile ? 16 : 24}" text-anchor="middle" fill="%23999999"%3EProfile Image%3C/text%3E%3C/svg%3E`;
+            };
         } else {
             // Default fallback
-            img.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"%3E%3Crect width="100" height="100" fill="%23f0f0f0"/%3E%3Cpath d="M30,50 L70,50 M50,30 L50,70" stroke="%23aaa" stroke-width="4"/%3E%3C/svg%3E';
+            img.src = `data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="${isMobile ? 50 : 100}" height="${isMobile ? 50 : 100}" viewBox="0 0 100 100"%3E%3Crect width="100" height="100" fill="%23f0f0f0"/%3E%3Cpath d="M30,50 L70,50 M50,30 L50,70" stroke="%23aaa" stroke-width="4"/%3E%3C/svg%3E`;
         }
-        
-        // Set a fixed size if dimensions are missing
+          // Set a fixed size if dimensions are missing
         if (img.naturalWidth === 0 || img.naturalHeight === 0) {
-            img.style.minWidth = '100px';
-            img.style.minHeight = '100px';
+            const isMobile = window.innerWidth <= 768;
+            if (isMobile) {
+                img.style.minWidth = '100%';
+                img.style.minHeight = isMobile ? '150px' : '200px';
+            } else {
+                img.style.minWidth = '100%';
+                img.style.minHeight = '200px';
+            }
         }
         
         // Add alt text if missing
         if (!img.alt) {
             img.alt = 'Image could not be loaded';
         }
+        
+        // Add a message element for better UX
+        if (!img.nextElementSibling || !img.nextElementSibling.classList.contains('image-error-message')) {
+            const errorMsg = document.createElement('div');
+            errorMsg.className = 'image-error-message';
+            errorMsg.textContent = 'Image could not be loaded';
+            errorMsg.style.cssText = 'font-size: 12px; color: #999; text-align: center; padding: 5px; background: #f8f8f8; border-radius: 0 0 4px 4px; margin-top: -4px;';
+            
+            // Only append for certain image types
+            if (img.closest('.project-image') || img.closest('.about-image')) {
+                const container = img.closest('.project-image') || img.closest('.about-image');
+                container.style.position = 'relative';
+                container.appendChild(errorMsg);
+            }
+        }
     }
+    
+    // Handle window resize events to adjust image placeholders
+    window.addEventListener('resize', function() {
+        const errorImages = document.querySelectorAll('.img-error');
+        if (errorImages.length > 0) {
+            setupImageFallbacks();
+        }
+    });
 });

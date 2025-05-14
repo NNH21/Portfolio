@@ -135,6 +135,26 @@
     .info-title {
         margin-bottom: 2px;
     }
+
+    body {
+        font-size: 13px;
+    }
+    
+    .hero-content h1 {
+        font-size: 1.6rem;
+    }
+    
+    .hero-content h2 {
+        font-size: 1.2rem;
+    }
+    
+    .project-image {
+        padding-bottom: 80% !important; /* Taller aspect ratio for very small screens */
+    }
+    
+    .hero-image img, .about-image img {
+        max-height: 200px; /* Smaller image height */
+    }
 }
 
 /* Fix chatbot for smaller screens */
@@ -166,6 +186,24 @@
     .suggested-question {
         margin: 3px;
         font-size: 11px;
+    }
+
+    img {
+        image-rendering: -webkit-optimize-contrast; /* Improve image sharpness on Webkit */
+        image-rendering: crisp-edges; /* Modern browsers */
+        transform: translateZ(0); /* Force GPU acceleration */
+    }
+    
+    .hero-image, .about-image {
+        border-radius: 6px;
+        overflow: hidden;
+    }
+    
+    /* Fix image container sizes */
+    .image-container {
+        border-radius: 6px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 }
 
@@ -215,14 +253,15 @@
 /* Touch enhancements for mobile */
 .touch-active {
     opacity: 0.7 !important;
-    transform: scale(0.97) !important;
-    transition: all 0.15s ease !important;
+    transform: scale(0.95);
+    transition: transform 0.2s ease;
 }
 
 /* Support for project image zooming on mobile */
 .project-image {
     position: relative;
     overflow: hidden;
+    -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
 }
 
 .project-image img.touch-zoomed {
@@ -263,6 +302,27 @@
     height: 100%;
     object-fit: cover;
     transition: transform 0.3s ease;
+    aspect-ratio: 4/3; /* 4:3 aspect ratio for project images */
+}
+
+.hero-image img, .about-image img {
+    aspect-ratio: 1/1; /* Square aspect ratio for profile photos */
+    object-fit: cover;
+}
+
+/* Image loading states */
+.img-loading {
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+}
+
+.img-loaded {
+    opacity: 1;
+}
+
+.img-error {
+    opacity: 0.8;
+    filter: grayscale(0.5);
 }
 
 /* Fix for oversized projects container on mobile */

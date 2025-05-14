@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
      */
     function addImageErrorHandling() {
         const allImages = document.querySelectorAll('img');
+        const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
         
         allImages.forEach(img => {
             // Add error handler if not already present
@@ -36,14 +37,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     // 2. If no data-src or already tried, use a fallback image
                     if (this.closest('.project-image')) {
-                        // Project image fallback
-                        this.src = 'images/projects/placeholder.png';
+                        // Project image fallback - use absolute path
+                        this.src = basePath + '/images/projects/placeholder.png';
                     } else if (this.closest('.about-image')) {
-                        // About image fallback
-                        this.src = 'images/personal/placeholder.jpg';
+                        // About image fallback - use absolute path
+                        this.src = basePath + '/images/personal/placeholder.jpg';
+                    } else if (this.closest('.hero-image')) {
+                        // Hero image fallback - use absolute path
+                        this.src = basePath + '/images/personal/placeholder.jpg';
                     } else {
-                        // General fallback
-                        this.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"%3E%3Crect width="100" height="100" fill="%23f0f0f0"/%3E%3Cpath d="M30,50 L70,50 M50,30 L50,70" stroke="%23aaa" stroke-width="4"/%3E%3C/svg%3E';
+                        // General fallback as inline SVG
+                        this.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="300" height="200" viewBox="0 0 300 200"%3E%3Crect width="300" height="200" fill="%23f0f0f0"/%3E%3Ctext x="150" y="100" font-family="Arial" font-size="14" text-anchor="middle" fill="%23999"%3EImage not available%3C/text%3E%3C/svg%3E';
                     }
                     
                     // 3. Add a class to indicate error
@@ -59,6 +63,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function prepareImagesForLazyLoading() {
         // Skip critical above-the-fold images
         const images = document.querySelectorAll('img:not(.hero-image img):not(.logo img)');
+        const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
         
         images.forEach(img => {
             // Only process images without data-src already set
@@ -66,6 +71,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Save original src to data attribute
                 const originalSrc = img.src;
                 img.setAttribute('data-src', originalSrc);
+                
+                // Generate a small placeholder with the correct aspect ratio
+                const width = img.width || img.naturalWidth || 600;
+                const height = img.height || img.naturalHeight || 400;
                 
                 // Set a lightweight placeholder - but don't replace images that are already loaded
                 if (img.complete && img.naturalWidth > 0) {
@@ -75,15 +84,21 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Set appropriate placeholder based on image type
                     if (img.closest('.project-image')) {
                         // Project thumbnails - maintain aspect ratio with a placeholder
-                        img.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400"%3E%3C/svg%3E';
+                        img.src = `data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"%3E%3Crect width="${width}" height="${height}" fill="%23f0f0f0"/%3E%3Ctext x="${width/2}" y="${height/2}" font-family="Arial" font-size="${width/30}" text-anchor="middle" fill="%23999"%3ELoading...%3C/text%3E%3C/svg%3E`;
+                    } else if (img.closest('.about-image')) {
+                        // About images
+                        img.src = basePath + '/images/personal/placeholder.jpg';
                     } else {
                         // Other images
-                        img.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1"%3E%3C/svg%3E';
+                        img.src = `data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"%3E%3Crect width="${width}" height="${height}" fill="%23f0f0f0"/%3E%3C/svg%3E`;
                     }
                 }
                 
                 // Add loading="lazy" for native browser lazy loading as fallback
                 img.setAttribute('loading', 'lazy');
+                
+                // Add a temporary class that will be removed when the image loads
+                img.classList.add('img-loading');
             }
         });
         
@@ -107,16 +122,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // When preload succeeds, update the visible image
                 preloadImg.onload = function() {
+                    // Apply the loaded image
                     image.src = src;
+                    image.classList.remove('img-loading');
                     image.classList.add('img-loaded');
                     image.removeAttribute('data-src');
+                    
+                    // Dispatch an event that can be used by other components
+                    const event = new CustomEvent('imageLoaded', { detail: { image } });
+                    document.dispatchEvent(event);
                 };
                 
-                // Handle preload failure
+                // Handle preload failure gracefully
                 preloadImg.onerror = function() {
-                    // Try direct loading instead
+                    console.warn('Failed to preload image:', src);
+                    // Fallback to original error handling by triggering the onerror handler
                     image.src = src;
                     image.removeAttribute('data-src');
+                    image.classList.remove('img-loading');
                 };
                 
                 // Start preloading
@@ -131,11 +154,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 });
             }, {
-                rootMargin: '50px 0px' // Start loading 50px before image enters viewport
+                rootMargin: '100px 0px', // Start loading 100px before image enters viewport
+                threshold: 0.1 // Start loading when 10% of the image is visible
             });
             
             lazyImages.forEach(img => {
-                imageObserver.observe(img);
+                // Add a small delay to avoid blocking main thread
+                setTimeout(() => {
+                    imageObserver.observe(img);
+                }, 100);
             });
         } else {
             // Fallback for browsers without intersection observer
@@ -150,33 +177,78 @@ document.addEventListener('DOMContentLoaded', function() {
      * Add touch-friendly image zoom for project images
      */
     function addTouchImageZoom() {
-        const projectImages = document.querySelectorAll('.project-image img');
+        const projectImages = document.querySelectorAll('.project-image img, .hero-image img, .about-image img');
         
         projectImages.forEach(img => {
-            // Create a touchstart event listener
-            img.addEventListener('touchstart', function(e) {
-                // Only if on mobile
-                if (window.innerWidth <= 768) {
-                    // Prevent default behavior
-                    e.preventDefault();
-                    
-                    // Toggle a zoomed class
-                    this.classList.toggle('touch-zoomed');
-                    
-                    // If zoomed, create an overlay to handle unzoom
-                    if (this.classList.contains('touch-zoomed')) {
-                        const overlay = document.createElement('div');
-                        overlay.className = 'zoom-overlay';
-                        document.body.appendChild(overlay);
-                        
-                        overlay.addEventListener('touchstart', function() {
-                            img.classList.remove('touch-zoomed');
-                            overlay.remove();
-                        });
-                    }
-                }
-            });
+            // Remove any existing listeners
+            img.removeEventListener('touchstart', touchZoomHandler);
+            img.removeEventListener('click', touchZoomHandler);
+            
+            // Add new listeners
+            img.addEventListener('touchstart', touchZoomHandler);
+            img.addEventListener('click', touchZoomHandler);
         });
+        
+        function touchZoomHandler(e) {
+            // Only if on mobile
+            if (window.innerWidth <= 768) {
+                // Prevent default behavior
+                e.preventDefault();
+                
+                // Check if image has loaded properly
+                if (this.naturalWidth === 0 || this.classList.contains('img-error')) {
+                    console.log('Cannot zoom broken image');
+                    return;
+                }
+                
+                // Toggle a zoomed class
+                this.classList.toggle('touch-zoomed');
+                
+                // If zoomed, create an overlay to handle unzoom
+                if (this.classList.contains('touch-zoomed')) {
+                    // Remove any existing overlays
+                    const existingOverlay = document.querySelector('.zoom-overlay');
+                    if (existingOverlay) {
+                        existingOverlay.remove();
+                    }
+                    
+                    const overlay = document.createElement('div');
+                    overlay.className = 'zoom-overlay';
+                    document.body.appendChild(overlay);
+                    
+                    // Create a close button
+                    const closeBtn = document.createElement('button');
+                    closeBtn.className = 'zoom-close-btn';
+                    closeBtn.innerHTML = '&times;';
+                    closeBtn.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 10000; ' +
+                                            'background: rgba(0,0,0,0.5); color: white; border: none; ' +
+                                            'width: 40px; height: 40px; border-radius: 50%; font-size: 24px; ' +
+                                            'display: flex; align-items: center; justify-content: center;';
+                    document.body.appendChild(closeBtn);
+                    
+                    const imgSrc = this.src;
+                    const imgAlt = this.alt || 'Image';
+                    
+                    // Handle close events
+                    const closeZoom = () => {
+                        this.classList.remove('touch-zoomed');
+                        overlay.remove();
+                        closeBtn.remove();
+                    };
+                    
+                    overlay.addEventListener('touchstart', closeZoom);
+                    overlay.addEventListener('click', closeZoom);
+                    closeBtn.addEventListener('touchstart', closeZoom);
+                    closeBtn.addEventListener('click', closeZoom);
+                    
+                    // Prevent scrolling on body when zoomed
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    // Enable scrolling when unzoomed
+                    document.body.style.overflow = '';
+                }
+            }
+        }
     }
     
     /**
@@ -209,6 +281,57 @@ document.addEventListener('DOMContentLoaded', function() {
                 };
             }
         });
+        
+        // Also preserve aspect ratios for hero and about images
+        preserveHeroImageAspectRatio();
+    }
+    
+    /**
+     * Special handling for hero and about images
+     * These often have different requirements than project images
+     */
+    function preserveHeroImageAspectRatio() {
+        const heroImage = document.querySelector('.hero-image img');
+        const aboutImage = document.querySelector('.about-image img');
+        
+        // Handle hero image
+        if (heroImage) {
+            // For mobile, make sure the aspect ratio is appropriate
+            if (window.innerWidth <= 768) {
+                heroImage.style.aspectRatio = '1/1'; // Square for mobile
+            } else {
+                heroImage.style.aspectRatio = 'auto'; // Natural ratio for desktop
+            }
+            
+            // Error handling
+            if (heroImage.complete && heroImage.naturalWidth === 0) {
+                // Image failed to load, apply fallback
+                const container = heroImage.closest('.hero-image');
+                if (container) {
+                    container.style.minHeight = '250px';
+                    container.style.backgroundColor = '#f8f8f8';
+                }
+            }
+        }
+        
+        // Handle about image
+        if (aboutImage) {
+            // Similar mobile optimization
+            if (window.innerWidth <= 768) {
+                aboutImage.style.aspectRatio = '3/2'; // 3:2 for mobile
+            } else {
+                aboutImage.style.aspectRatio = 'auto'; // Natural ratio for desktop
+            }
+            
+            // Error handling
+            if (aboutImage.complete && aboutImage.naturalWidth === 0) {
+                const container = aboutImage.closest('.about-image');
+                if (container) {
+                    container.style.minHeight = '200px';
+                    container.style.backgroundColor = '#f8f8f8';
+                }
+            }
+        }
     }
     
     /**

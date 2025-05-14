@@ -555,3 +555,81 @@
         transform-origin: bottom;
     }
 }
+
+/* Mobile-specific animation optimizations */
+@media (max-width: 768px) {
+    /* Reduce animation complexity on mobile */
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    @keyframes slideInFromLeft {
+        from { transform: translateX(-30px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes slideInFromRight {
+        from { transform: translateX(30px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    
+    /* Shorter animation durations for mobile */
+    .animate {
+        animation-duration: 0.5s !important;
+    }
+    
+    /* Reduce float movement on mobile to prevent layout shifts */
+    @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-5px); }
+        100% { transform: translateY(0px); }
+    }
+    
+    /* Fix for image container animations */
+    .image-container {
+        animation: float 3s ease-in-out infinite !important;
+        transform: translateZ(0); /* Force hardware acceleration */
+        will-change: transform;
+    }
+    
+    /* Optimize image animations */
+    .hero-image img, .about-image img {
+        transition: transform 0.3s ease-out !important;
+        will-change: transform;
+        transform: translateZ(0);
+        backface-visibility: hidden;
+    }
+    
+    /* Disable some animations on very small devices */
+    @media (max-width: 480px) {
+        .animate-float {
+            animation: none !important;
+            transform: none !important;
+        }
+        
+        .animate-pulse {
+            animation: none !important;
+        }
+        
+        /* Keep critical animations */
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease forwards !important;
+        }
+        
+        /* Simplify project card animations */
+        .project-card:hover {
+            transform: translateY(-5px) !important;
+        }
+    }
+    
+    /* For users who prefer reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+        * {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+            scroll-behavior: auto !important;
+        }
+    }
+}
