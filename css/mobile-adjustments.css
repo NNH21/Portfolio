@@ -94,6 +94,46 @@
     .form-group {
         margin-bottom: 15px;
     }
+    
+    /* Improve navigation UI on mobile */
+    header .navbar {
+        padding: 15px 25px;
+    }
+    
+    .nav-links {
+        width: 85%; /* Take up more space on small screens */
+        max-width: 300px;
+    }
+    
+    /* Make the hamburger icon easier to tap */
+    .hamburger {
+        padding: 10px;
+        margin-right: -10px;
+    }
+    
+    /* Add overlay when menu is open */
+    .nav-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease;
+    }
+    
+    .nav-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    /* Ensure menu closes when overlay is clicked */
+    body.menu-open {
+        overflow: hidden;
+    }
 }
 
 /* Fix for mobile navigation issues */

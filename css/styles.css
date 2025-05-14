@@ -183,6 +183,7 @@ header.scrolled {
 .hamburger {
     display: none;
     cursor: pointer;
+    z-index: 1001; /* Ensure it stays above the mobile nav */
 }
 
 .bar {
@@ -191,7 +192,7 @@ header.scrolled {
     height: 3px;
     margin: 5px auto;
     background-color: var(--secondary-color);
-    transition: var(--transition);
+    transition: all 0.3s ease-in-out;
 }
 
 /* ====== Hero Section ====== */

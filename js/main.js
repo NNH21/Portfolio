@@ -1,12 +1,17 @@
 // Wait for the DOM to be fully loaded
-document.addEventListener('DOMContentLoaded', function() {
-    // Navigation handling for mobile menu
+document.addEventListener('DOMContentLoaded', function() {    // Navigation handling for mobile menu
     const hamburger = document.querySelector('.hamburger');
     const navLinks = document.querySelector('.nav-links');
+    const navOverlay = document.querySelector('.nav-overlay');
     
-    hamburger.addEventListener('click', function() {
+    hamburger.addEventListener('click', function(e) {
+        e.stopPropagation(); // Prevent document click from immediately closing it
         hamburger.classList.toggle('active');
         navLinks.classList.toggle('active');
+        navOverlay.classList.toggle('active');
+        
+        // Add class to body to prevent scrolling when menu is open
+        document.body.classList.toggle('menu-open');
     });
     
     // Close mobile menu when a nav link is clicked
@@ -14,7 +19,17 @@ document.addEventListener('DOMContentLoaded', function() {
         link.addEventListener('click', () => {
             hamburger.classList.remove('active');
             navLinks.classList.remove('active');
+            navOverlay.classList.remove('active');
+            document.body.classList.remove('menu-open');
         });
+    });
+    
+    // Close menu when clicking overlay
+    navOverlay.addEventListener('click', function() {
+        hamburger.classList.remove('active');
+        navLinks.classList.remove('active');
+        navOverlay.classList.remove('active');
+        document.body.classList.remove('menu-open');
     });
     
     // Active link highlighting based on scroll position
