@@ -31,6 +31,16 @@
             // You need to replace YOUR_PUBLIC_KEY with your actual EmailJS public key
         })();
     </script>
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        
+        gtag('config', 'G-XXXXXXXXXX');
+    </script>
 </head>
 <body>
     <!-- Preloader -->
@@ -635,6 +645,7 @@
         <div class="footer-bottom animate-fade-in delay-3">
             <p>&copy; 2025 My Portfolio. All Rights Reserved.</p>
             <p>Designed and Developed by <span class="highlight">HoangDev21</span></p>
+            <p><a href="admin-login.html" class="admin-link">Admin Dashboard</a></p>
         </div>
     </footer>    <!-- Back to Top Button -->
     <a href="#home" class="back-to-top animate-pulse">
@@ -669,5 +680,8 @@
     
     <!-- Final form fix to prevent focus scrolling issues -->
     <script src="js/form-focus-fix.js"></script>
+    
+    <!-- Analytics script -->
+    <script src="js/analytics.js"></script>
 </body>
 </html>

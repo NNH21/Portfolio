@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Admin Login - Portfolio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f5f7fc;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .login-container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            padding: 40px;
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .login-header i {
+            font-size: 48px;
+            color: #4831d4;
+            margin-bottom: 15px;
+        }
+        
+        .login-header h1 {
+            font-size: 24px;
+            color: #333;
+            margin: 0;
+        }
+        
+        .login-form .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .login-form label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #555;
+        }
+        
+        .login-form input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        .login-form input:focus {
+            border-color: #4831d4;
+            outline: none;
+        }
+        
+        .login-form button {
+            width: 100%;
+            background-color: #4831d4;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 12px 15px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .login-form button:hover {
+            background-color: #3a28a7;
+        }
+        
+        .login-footer {
+            text-align: center;
+            margin-top: 25px;
+        }
+        
+        .login-footer a {
+            color: #4831d4;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+        
+        .login-footer a:hover {
+            color: #3a28a7;
+        }
+        
+        #error-message {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 15px;
+            text-align: center;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <i class="fas fa-lock"></i>
+            <h1>Admin Login</h1>
+        </div>
+        
+        <form id="login-form" class="login-form">
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter your admin password" required>
+            </div>
+            
+            <button type="submit">Login</button>
+            
+            <div id="error-message">Invalid password. Please try again.</div>
+        </form>
+        
+        <div class="login-footer">
+            <a href="index.html"><i class="fas fa-arrow-left"></i> Back to Website</a>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const password = document.getElementById('password').value;
+            // Mật khẩu mặc định là "admin123" - bạn có thể thay đổi thành mật khẩu mạnh hơn
+            const correctHash = "d033e22ae348aeb5660fc2140aec35850c4da997"; // SHA-1 hash của "admin123"
+            
+            // Hàm hash mật khẩu bằng SHA-1 (chỉ sử dụng cho trình duyệt hiện đại)
+            async function hashPassword(password) {
+                const encoder = new TextEncoder();
+                const data = encoder.encode(password);
+                const hashBuffer = await crypto.subtle.digest('SHA-1', data);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+                return hashHex;
+            }
+            
+            // Kiểm tra mật khẩu
+            hashPassword(password).then(hash => {
+                if (hash === correctHash) {
+                    // Lưu thông tin đăng nhập vào localStorage (sẽ hết hạn sau 1 ngày)
+                    const expiryTime = new Date().getTime() + (24 * 60 * 60 * 1000); // 24 giờ
+                    localStorage.setItem('adminAuth', JSON.stringify({ 
+                        isAuth: true, 
+                        expiry: expiryTime 
+                    }));
+                    
+                    // Chuyển hướng đến trang dashboard
+                    window.location.href = 'admin-dashboard.html';
+                } else {
+                    // Hiển thị thông báo lỗi
+                    document.getElementById('error-message').style.display = 'block';
+                    document.getElementById('password').value = '';
+                }
+            });
+        });
+    </script>
+</body>
+</html> 
