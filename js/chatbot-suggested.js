@@ -115,10 +115,125 @@ function addContextualSuggestedQuestions() {
     const suggestedQuestionsContainer = document.createElement('div');
     suggestedQuestionsContainer.className = 'suggested-questions';
     
-    // Default follow-up questions based on language
-    const followUpQuestions = isVietnamese ? 
-        ['Làm thế nào để liên hệ với bạn?'] : 
-        [];
+    // Default follow-up questions based on language and context
+    let followUpQuestions = [];
+    
+    if (isVietnamese) {
+        // Portfolio related context
+        if (latestBotMessage.includes('dự án') || latestBotMessage.includes('project') || latestBotMessage.includes('portfolio')) {
+            followUpQuestions = [
+                'Chi tiết hơn về dự án Tutor-Platform?',
+                'Công nghệ nào được sử dụng cho các dự án?',
+                'Có link demo cho các dự án không?'
+            ];
+        } 
+        // Skills related context
+        else if (latestBotMessage.includes('kỹ năng') || latestBotMessage.includes('skill') || latestBotMessage.includes('công nghệ')) {
+            followUpQuestions = [
+                'Bạn đánh giá kỹ năng JavaScript của mình thế nào?',
+                'Kinh nghiệm làm việc với framework nào?',
+                'Có kinh nghiệm với công nghệ AI không?'
+            ];
+        }
+        // Contact related context
+        else if (latestBotMessage.includes('liên hệ') || latestBotMessage.includes('contact') || latestBotMessage.includes('email')) {
+            followUpQuestions = [
+                'Thời gian phản hồi email là bao lâu?',
+                'Có thể thuê làm dự án freelance không?',
+                'Có làm việc remote không?'
+            ];
+        }
+        // AI or tech related context
+        else if (latestBotMessage.includes('trí tuệ nhân tạo') || latestBotMessage.includes('AI') || latestBotMessage.includes('công nghệ')) {
+            followUpQuestions = [
+                'AI sẽ thay thế lập trình viên không?',
+                'Xu hướng công nghệ hàng đầu hiện nay?',
+                'Gemini so với ChatGPT thì sao?'
+            ];
+        }
+        // Blockchain related context
+        else if (latestBotMessage.includes('blockchain') || latestBotMessage.includes('crypto') || latestBotMessage.includes('bitcoin')) {
+            followUpQuestions = [
+                'Smart contract là gì?',
+                'NFT có phải là tương lai không?',
+                'Blockchain ứng dụng vào các lĩnh vực nào?'
+            ];
+        }
+        // Learning related context
+        else if (latestBotMessage.includes('học') || latestBotMessage.includes('lập trình') || latestBotMessage.includes('tài liệu')) {
+            followUpQuestions = [
+                'Khóa học lập trình nào tốt nhất?',
+                'Tài liệu học React tốt nhất?',
+                'Nên bắt đầu với ngôn ngữ nào?'
+            ];
+        }
+        // Default Vietnamese questions
+        else {
+            followUpQuestions = [
+                'Bạn có thể kể về kinh nghiệm làm việc không?',
+                'Những xu hướng công nghệ nào đang hot?',
+                'Nên chọn ngôn ngữ lập trình nào để bắt đầu?'
+            ];
+        }
+    } else {
+        // English context-based questions
+        // Portfolio related
+        if (latestBotMessage.includes('project') || latestBotMessage.includes('portfolio')) {
+            followUpQuestions = [
+                'More details about the Tutor Platform project?',
+                'What technologies were used in your projects?',
+                'Do you have demo links for your projects?'
+            ];
+        }
+        // Skills related
+        else if (latestBotMessage.includes('skill') || latestBotMessage.includes('technology')) {
+            followUpQuestions = [
+                'How would you rate your JavaScript skills?',
+                'Experience with which frameworks?',
+                'Any experience with AI technologies?'
+            ];
+        }
+        // Contact related
+        else if (latestBotMessage.includes('contact') || latestBotMessage.includes('hire') || latestBotMessage.includes('email')) {
+            followUpQuestions = [
+                'What is your email response time?',
+                'Are you available for freelance projects?',
+                'Do you work remotely?'
+            ];
+        }
+        // AI or tech related
+        else if (latestBotMessage.includes('artificial intelligence') || latestBotMessage.includes('AI') || latestBotMessage.includes('technology')) {
+            followUpQuestions = [
+                'Will AI replace programmers?',
+                'Top technology trends right now?',
+                'How does Gemini compare to ChatGPT?'
+            ];
+        }
+        // Blockchain related
+        else if (latestBotMessage.includes('blockchain') || latestBotMessage.includes('crypto') || latestBotMessage.includes('bitcoin')) {
+            followUpQuestions = [
+                'What are smart contracts?',
+                'Are NFTs the future?',
+                'Applications of blockchain in various fields?'
+            ];
+        }
+        // Learning related
+        else if (latestBotMessage.includes('learn') || latestBotMessage.includes('programming') || latestBotMessage.includes('resources')) {
+            followUpQuestions = [
+                'What are the best programming courses?',
+                'Best resources to learn React?',
+                'Which language should beginners start with?'
+            ];
+        }
+        // Default English questions
+        else {
+            followUpQuestions = [
+                'Can you tell me about your work experience?',
+                'What technology trends are hot right now?',
+                'Which programming language should I start with?'
+            ];
+        }
+    }
     
     // Only add questions if we have any
     if (followUpQuestions.length > 0) {

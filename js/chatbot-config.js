@@ -8,7 +8,7 @@ const CHATBOT_CONFIG = {
     geminiApiKey: 'AIzaSyC-XhSIu3F_vKL9DVHtwv6ZSYsqbEyWhck',
     
     // Initial greeting message
-    welcomeMessage: "Xin chào! Tôi là trợ lý ảo Mis. Tôi có thể giúp gì cho bạn?",
+    welcomeMessage: "Xin chào! Tôi là trợ lý ảo Mis. Tôi có thể giúp gì cho bạn? Bạn có thể hỏi tôi về portfolio hoặc bất kỳ câu hỏi nào khác.",
     
     // Chatbot name
     botName: "Trợ lý Mis",
@@ -37,7 +37,10 @@ const CHATBOT_CONFIG = {
     suggestedQuestions: [
         "Bạn có những dự án nào?",
         "Bạn có kinh nghiệm với công nghệ gì?",
-        "Làm thế nào để liên hệ với bạn?"
+        "Làm thế nào để liên hệ với bạn?",
+        "Blockchain là gì?",
+        "Làm thế nào để học lập trình hiệu quả?",
+        "Giải thích về trí tuệ nhân tạo"
     ],
     
     // UI Configuration

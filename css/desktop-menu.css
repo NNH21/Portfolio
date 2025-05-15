@@ -8,6 +8,7 @@
     width: 100%;
 }
 
+
 /* Add RGB values for animation */
 :root {
     --primary-color-rgb: 94, 59, 238; /* RGB value of #5e3bee */
@@ -31,7 +32,8 @@
     .main-menu {
         display: flex;
         list-style: none;
-        margin: 0;
+        margin-right: 20px;
+        margin-left: auto;
         padding: 0;
         gap: 15px; /* Add some spacing between menu items */
     }
@@ -41,6 +43,10 @@
         padding: 10px 5px;
         cursor: pointer;
         transition: all 0.3s ease;
+    }
+    .main-menu-category:hover {
+        background-image: linear-gradient(to right, #7051ee, #a680f1);
+        border-radius: 8px;
     }
 
     .category-title {
