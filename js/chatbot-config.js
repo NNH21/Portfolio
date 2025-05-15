@@ -62,3 +62,53 @@ const CHATBOT_CONFIG = {
         animationSpeed: "0.3s"
     }
 };
+
+// Cấu hình chatbot và tracking
+const chatbotConfig = {
+  enabled: true,
+  apiEndpoint: 'https://api.example.com/chatbot',
+  initialMessage: 'Chào bạn! Tôi có thể giúp gì cho bạn?',
+  suggestedQueries: [
+    'Các dự án của bạn',
+    'Kỹ năng của bạn',
+    'Cách liên hệ'
+  ]
+};
+
+// Cấu hình theo dõi người dùng
+const trackingConfig = {
+  enabled: true,
+  analyticsId: 'G-09V4B9YHB1',
+  trackPageViews: true,
+  trackEvents: true,
+  trackUserInteractions: true,
+  debugMode: true // Bật chế độ debug để kiểm tra
+};
+
+// Hàm kiểm tra trạng thái chức năng analytics
+function checkAnalyticsStatus() {
+  // Kiểm tra xem Google Analytics đã được tải chưa
+  if (typeof gtag === 'undefined') {
+    console.error('Google Analytics không được tải đúng cách');
+    return false;
+  }
+  
+  console.log('Google Analytics đã được tải thành công');
+  
+  // Gửi sự kiện test để kiểm tra
+  if (trackingConfig.enabled && trackingConfig.debugMode) {
+    gtag('event', 'test_event', {
+      'event_category': 'testing',
+      'event_label': 'analytics_check',
+      'value': Date.now()
+    });
+    console.log('Đã gửi sự kiện test đến Google Analytics');
+  }
+  
+  return true;
+}
+
+// Gọi hàm kiểm tra sau khi trang đã tải xong
+window.addEventListener('load', function() {
+  setTimeout(checkAnalyticsStatus, 2000); // Chờ 2 giây để đảm bảo GA đã tải xong
+});

@@ -1,118 +1,33 @@
-// Analytics Functionality
+// Analytics Functionality - Thu thập dữ liệu không hiển thị cho người dùng
 document.addEventListener('DOMContentLoaded', function() {
-    // Hiển thị thông báo cho người dùng lần đầu truy cập
-    showVisitNotification();
-    
-    // Theo dõi tương tác của người dùng trên trang
-    trackUserInteractions();
-    
-    // Theo dõi thông tin thiết bị
-    trackDeviceInfo();
-    
-    // Theo dõi thời gian truy cập
-    trackVisitTime();
-    
-    // Theo dõi vị trí địa lý (nếu người dùng cho phép)
-    trackGeolocation();
-    
-    // Thêm nút thống kê
-    addStatsButton();
-    
-    // Chạy theo dõi chế độ xem trang
-    trackPageViews();
+    // Thu thập thông tin người dùng mà không hiển thị
+    trackUserDataSilently();
 });
 
-// Hiển thị thông báo cho người dùng
-function showVisitNotification() {
-    // Kiểm tra xem đây có phải là lần đầu truy cập không
-    if (!localStorage.getItem('hasVisitedBefore')) {
-        // Tạo một thông báo nhỏ ở góc màn hình
-        const notification = document.createElement('div');
-        notification.className = 'visit-notification';
-        notification.innerHTML = `
-            <div class="notification-content">
-                <i class="fas fa-chart-line"></i>
-                <p>Chào mừng bạn đến với website của tôi! Thông tin truy cập của bạn được ghi nhận để cải thiện trải nghiệm.</p>
-                <button class="close-notification"><i class="fas fa-times"></i></button>
-            </div>
-        `;
-        
-        // Thêm CSS cho thông báo
-        const style = document.createElement('style');
-        style.textContent = `
-            .visit-notification {
-                position: fixed;
-                bottom: 20px;
-                right: 20px;
-                max-width: 320px;
-                background-color: #4831d4;
-                color: white;
-                padding: 15px;
-                border-radius: 8px;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-                z-index: 9999;
-                animation: slide-in 0.3s ease-out;
-            }
-            
-            .notification-content {
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            .notification-content i {
-                font-size: 20px;
-            }
-            
-            .notification-content p {
-                margin: 0;
-                font-size: 14px;
-                line-height: 1.4;
-            }
-            
-            .close-notification {
-                position: absolute;
-                top: 10px;
-                right: 10px;
-                background: none;
-                border: none;
-                color: white;
-                cursor: pointer;
-                font-size: 14px;
-            }
-            
-            @keyframes slide-in {
-                from { transform: translateX(100%); opacity: 0; }
-                to { transform: translateX(0); opacity: 1; }
-            }
-        `;
-        
-        document.head.appendChild(style);
-        document.body.appendChild(notification);
-        
-        // Xử lý đóng thông báo
-        document.querySelector('.close-notification').addEventListener('click', function() {
-            notification.style.display = 'none';
-        });
-        
-        // Lưu trạng thái đã truy cập
-        localStorage.setItem('hasVisitedBefore', 'true');
-        
-        // Tự động ẩn thông báo sau 8 giây
-        setTimeout(function() {
-            notification.style.opacity = '0';
-            notification.style.transition = 'opacity 0.5s ease';
-            
-            setTimeout(function() {
-                if (notification.parentNode) {
-                    notification.parentNode.removeChild(notification);
-                }
-            }, 500);
-        }, 8000);
+// Thu thập dữ liệu người dùng mà không hiển thị thông báo hay giao diện
+function trackUserDataSilently() {
+    if (typeof gtag !== 'function') {
+        console.warn('Google Analytics không được tải - không thể theo dõi dữ liệu');
+        return;
     }
+    
+    // Theo dõi các tương tác của người dùng
+    trackUserInteractions();
+    
+    // Thu thập thông tin thiết bị
+    trackDeviceInfo();
+    
+    // Thu thập thời gian truy cập
+    trackVisitTime();
+    
+    // Thu thập vị trí địa lý (nếu người dùng cho phép)
+    trackGeolocation();
+    
+    // Thu thập dữ liệu trang người dùng đã xem
+    trackPageViews();
 }
 
-// Theo dõi các tương tác của người dùng
+// Theo dõi tương tác người dùng
 function trackUserInteractions() {
     // Theo dõi các lần click vào các liên kết quan trọng
     document.querySelectorAll('a.btn, .nav-links a, .project-links a').forEach(function(element) {
@@ -340,45 +255,40 @@ function trackPageViews() {
     });
 }
 
-// Thêm nút thống kê vào trang
-function addStatsButton() {
-    // Tạo nút thống kê
-    const statsButton = document.createElement('div');
-    statsButton.className = 'visitor-stats';
-    statsButton.innerHTML = '<i class="fas fa-chart-bar"></i>';
+// Tạo mã định danh người dùng duy nhất để theo dõi phiên
+function generateUserID() {
+    let userId = localStorage.getItem('visitor_id');
+    if (!userId) {
+        userId = 'visitor_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+        localStorage.setItem('visitor_id', userId);
+    }
     
-    // Tạo bảng thống kê
-    const statsPanel = document.createElement('div');
-    statsPanel.className = 'stats-panel';
-    statsPanel.id = 'stats-panel';
-    statsPanel.innerHTML = `
-        <h3>Thông tin truy cập</h3>
-        <div class="stats-item">
-            <span class="stats-label">Thiết bị:</span>
-            <span class="stats-value" id="stats-device">${getDeviceType()}</span>
-        </div>
-        <div class="stats-item">
-            <span class="stats-label">Trình duyệt:</span>
-            <span class="stats-value" id="stats-browser">${getBrowserInfo().name}</span>
-        </div>
-        <div class="stats-item">
-            <span class="stats-label">Thời gian:</span>
-            <span class="stats-value" id="stats-time">${new Date().toLocaleTimeString()}</span>
-        </div>
-        <div class="stats-item">
-            <span class="stats-label">Ngày:</span>
-            <span class="stats-value" id="stats-date">${new Date().toLocaleDateString()}</span>
-        </div>
-    `;
+    // Gửi ID người dùng đến GA
+    if (typeof gtag === 'function') {
+        gtag('set', {
+            'user_id': userId
+        });
+    }
     
-    // Thêm vào trang
-    document.body.appendChild(statsButton);
-    document.body.appendChild(statsPanel);
+    return userId;
+}
+
+// Gửi sự kiện tùy chỉnh đến Google Analytics
+function sendCustomEvent(eventName, params) {
+    if (typeof gtag !== 'function') return;
     
-    // Xử lý sự kiện click
-    let isVisible = false;
-    statsButton.addEventListener('click', function() {
-        isVisible = !isVisible;
-        statsPanel.style.display = isVisible ? 'block' : 'none';
+    gtag('event', eventName, params);
+}
+
+// Khởi tạo theo dõi khi trang tải xong
+window.addEventListener('load', function() {
+    // Tạo ID người dùng nếu chưa có
+    generateUserID();
+    
+    // Gửi sự kiện trang đã tải
+    sendCustomEvent('page_loaded', {
+        'page_path': window.location.pathname,
+        'page_title': document.title,
+        'referrer': document.referrer
     });
-} 
+}); 

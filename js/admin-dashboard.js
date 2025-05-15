@@ -98,6 +98,21 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+    
+    // Chuyển đổi tab trên admin dashboard
+    setupTabNavigation();
+    
+    // Tải dữ liệu analytics nếu có cấu hình
+    loadAnalyticsData();
+    
+    // Hiển thị dữ liệu người dùng đã thu thập
+    displayUserData();
+    
+    // Lưu cài đặt analytics khi biểu mẫu được gửi
+    setupAnalyticsForm();
+    
+    // Xử lý chuyển đổi theme 
+    setupThemeToggle();
 });
 
 // Initialize dashboard
@@ -321,171 +336,146 @@ function createPagesChart(data) {
 
 // Load visitor data
 function loadVisitorData() {
-    // Check if credentials are available
-    const gaId = localStorage.getItem('ga-id');
-    const viewId = localStorage.getItem('view-id');
+    // Số lượng người truy cập (đọc từ localStorage)
+    let visitorCount = 0;
+    const visitorIds = [];
     
-    if (!gaId || !viewId) {
-        return;
+    // Thu thập ID người dùng đã lưu
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith('visitor_')) {
+            visitorIds.push(key);
+            visitorCount++;
+        }
     }
     
-    // Sample visitor trend data
-    const visitorTrends = {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-        data: [500, 600, 750, 800, 950, 1200]
-    };
+    // Hiển thị số liệu tổng quan
+    updateDashboardStats(visitorCount);
     
-    // Sample visitor types data
-    const visitorTypes = {
-        labels: ['New', 'Returning'],
-        data: [65, 35]
-    };
+    // Tạo biểu đồ nếu có dữ liệu
+    createVisitorCharts();
     
-    // Sample geo data
-    const geoData = {
-        labels: ['USA', 'India', 'UK', 'Canada', 'Germany'],
-        data: [45, 20, 15, 10, 5]
-    };
-    
-    // Create visitor trends chart
-    createVisitorTrendsChart(visitorTrends);
-    
-    // Create visitor types chart
-    createVisitorTypesChart(visitorTypes);
-    
-    // Create geo chart
-    createGeoChart(geoData);
+    // Tạo bảng dữ liệu người dùng
+    createVisitorTable(visitorIds);
 }
 
-// Create visitor trends chart
-function createVisitorTrendsChart(data) {
-    const ctx = document.getElementById('visitor-trends-chart');
+// Cập nhật số liệu trên dashboard
+function updateDashboardStats(visitorCount) {
+    // Cập nhật số liệu thống kê
+    if (document.getElementById('total-visitors')) {
+        document.getElementById('total-visitors').textContent = visitorCount || '-';
+    }
     
-    // Clear previous content
-    ctx.innerHTML = '';
+    // Các thống kê khác - sử dụng dữ liệu giả
+    if (document.getElementById('page-views')) {
+        document.getElementById('page-views').textContent = visitorCount > 0 ? visitorCount * 3 : '-';
+    }
     
-    // Create canvas element
-    const canvas = document.createElement('canvas');
-    ctx.appendChild(canvas);
+    if (document.getElementById('avg-duration')) {
+        document.getElementById('avg-duration').textContent = visitorCount > 0 ? '2m 35s' : '-';
+    }
     
-    // Create chart
-    new Chart(canvas, {
-        type: 'line',
-        data: {
-            labels: data.labels,
-            datasets: [{
-                label: 'Monthly Visitors',
-                data: data.data,
-                backgroundColor: 'rgba(72, 49, 212, 0.2)',
-                borderColor: 'rgba(72, 49, 212, 1)',
-                borderWidth: 2,
-                tension: 0.3,
-                pointBackgroundColor: 'rgba(72, 49, 212, 1)',
-                pointBorderColor: '#fff',
-                pointBorderWidth: 2,
-                pointRadius: 4
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
+    if (document.getElementById('bounce-rate')) {
+        document.getElementById('bounce-rate').textContent = visitorCount > 0 ? '45%' : '-';
+    }
 }
 
-// Create visitor types chart
-function createVisitorTypesChart(data) {
-    const ctx = document.getElementById('visitor-types-chart');
+// Tạo biểu đồ người dùng
+function createVisitorCharts() {
+    // Thông tin thiết bị - Dữ liệu mẫu
+    const deviceData = {
+        desktop: 65,
+        mobile: 30,
+        tablet: 5
+    };
     
-    // Clear previous content
-    ctx.innerHTML = '';
-    
-    // Create canvas element
-    const canvas = document.createElement('canvas');
-    ctx.appendChild(canvas);
-    
-    // Create chart
-    new Chart(canvas, {
-        type: 'doughnut',
-        data: {
-            labels: data.labels,
-            datasets: [{
-                data: data.data,
-                backgroundColor: [
-                    'rgba(72, 49, 212, 0.7)',
-                    'rgba(204, 243, 129, 0.7)'
-                ],
-                borderColor: [
-                    'rgba(72, 49, 212, 1)',
-                    'rgba(204, 243, 129, 1)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'bottom'
-                }
+    // Tạo biểu đồ thiết bị nếu thư viện Chart.js có sẵn
+    const deviceChart = document.getElementById('device-categories-chart');
+    if (deviceChart && typeof Chart !== 'undefined') {
+        // Xóa nội dung hiện tại
+        deviceChart.innerHTML = '';
+        
+        // Tạo canvas
+        const canvas = document.createElement('canvas');
+        deviceChart.appendChild(canvas);
+        
+        // Tạo biểu đồ
+        new Chart(canvas, {
+            type: 'doughnut',
+            data: {
+                labels: ['Desktop', 'Mobile', 'Tablet'],
+                datasets: [{
+                    data: [deviceData.desktop, deviceData.mobile, deviceData.tablet],
+                    backgroundColor: ['#4831d4', '#ccf381', '#fd8a8a']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
             }
-        }
-    });
+        });
+    } else if (deviceChart) {
+        // Hiển thị dạng văn bản nếu không có Chart.js
+        deviceChart.innerHTML = `
+            <div class="chart-fallback">
+                <p>Desktop: ${deviceData.desktop}%</p>
+                <p>Mobile: ${deviceData.mobile}%</p>
+                <p>Tablet: ${deviceData.tablet}%</p>
+            </div>
+        `;
+    }
+    
+    // Tạo các biểu đồ khác nếu cần
 }
 
-// Create geo chart
-function createGeoChart(data) {
-    const ctx = document.getElementById('geo-chart');
+// Tạo bảng thông tin người dùng
+function createVisitorTable(visitorIds) {
+    const visitorsTable = document.getElementById('visitors-table');
+    if (!visitorsTable) return;
     
-    // Clear previous content
-    ctx.innerHTML = '';
+    // Tạo header cho bảng
+    let tableHTML = `
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ID Người dùng</th>
+                    <th>Thiết bị</th>
+                    <th>Trình duyệt</th>
+                    <th>Thời gian xem</th>
+                    <th>Trang đã xem</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
     
-    // Create canvas element
-    const canvas = document.createElement('canvas');
-    ctx.appendChild(canvas);
-    
-    // Create chart
-    new Chart(canvas, {
-        type: 'bar',
-        data: {
-            labels: data.labels,
-            datasets: [{
-                label: 'Visitors by Country',
-                data: data.data,
-                backgroundColor: [
-                    'rgba(72, 49, 212, 0.7)',
-                    'rgba(204, 243, 129, 0.7)',
-                    'rgba(255, 118, 118, 0.7)',
-                    'rgba(44, 201, 188, 0.7)',
-                    'rgba(255, 190, 11, 0.7)'
-                ],
-                borderColor: [
-                    'rgba(72, 49, 212, 1)',
-                    'rgba(204, 243, 129, 1)',
-                    'rgba(255, 118, 118, 1)',
-                    'rgba(44, 201, 188, 1)',
-                    'rgba(255, 190, 11, 1)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            indexAxis: 'y',
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                x: {
-                    beginAtZero: true
-                }
-            }
+    // Thêm dữ liệu vào bảng (từ visitorIds hoặc dữ liệu mẫu)
+    if (visitorIds.length === 0) {
+        tableHTML += `
+            <tr>
+                <td colspan="5" class="no-data">Chưa có dữ liệu người dùng</td>
+            </tr>
+        `;
+    } else {
+        // Sử dụng dữ liệu mẫu
+        for (let i = 0; i < Math.min(visitorIds.length, 10); i++) {
+            tableHTML += `
+                <tr>
+                    <td>${visitorIds[i].replace('visitor_', 'usr_')}</td>
+                    <td>Desktop</td>
+                    <td>Chrome</td>
+                    <td>3m 22s</td>
+                    <td>Trang chủ, Dự án</td>
+                </tr>
+            `;
         }
-    });
+    }
+    
+    tableHTML += `
+            </tbody>
+        </table>
+    `;
+    
+    visitorsTable.innerHTML = tableHTML;
 }
 
 // Load device data
@@ -963,4 +953,326 @@ function showPlaceholderData() {
     // Show login message in charts
     document.getElementById('visitors-chart').innerHTML = '<p class="login-message">Connect to Google Analytics API to view data</p>';
     document.getElementById('pages-chart').innerHTML = '<p class="login-message">Connect to Google Analytics API to view data</p>';
+}
+
+// Chuyển đổi tab trên admin dashboard
+function setupTabNavigation() {
+    const menuItems = document.querySelectorAll('.sidebar-item');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    menuItems.forEach(item => {
+        item.addEventListener('click', function() {
+            // Xóa trạng thái active
+            menuItems.forEach(i => i.classList.remove('active'));
+            tabContents.forEach(c => c.classList.remove('active'));
+            
+            // Đặt trạng thái active mới
+            this.classList.add('active');
+            const tabId = this.getAttribute('data-tab');
+            document.getElementById(tabId).classList.add('active');
+        });
+    });
+}
+
+// Tải dữ liệu analytics
+function loadAnalyticsData() {
+    // Kiểm tra thông tin cấu hình từ localStorage
+    const gaSettings = getAnalyticsSettings();
+    
+    if (!gaSettings || !gaSettings.gaId || !gaSettings.apiKey) {
+        showSettingsNotification('Vui lòng cấu hình Google Analytics trong phần Cài đặt');
+        return;
+    }
+    
+    // Tải dữ liệu từ Google Analytics API
+    loadGAData(gaSettings);
+}
+
+// Hiển thị dữ liệu người dùng đã thu thập
+function displayUserData() {
+    // Lấy dữ liệu người dùng đã thu thập từ localStorage 
+    // (giả định dữ liệu được lưu từ analytics.js)
+    const userDataKeys = [];
+    let totalVisitors = 0;
+    
+    // Tìm tất cả các khóa trong localStorage liên quan đến người dùng truy cập
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith('visitor_')) {
+            userDataKeys.push(key);
+            totalVisitors++;
+        }
+    }
+    
+    // Hiển thị tổng số người truy cập
+    if (document.getElementById('total-visitors')) {
+        document.getElementById('total-visitors').textContent = totalVisitors || '-';
+    }
+    
+    // Tạo bảng thông tin chi tiết người dùng
+    createVisitorsTable(userDataKeys);
+    
+    // Hiển thị thông tin thiết bị
+    displayDeviceStats();
+}
+
+// Tạo bảng hiển thị thông tin người dùng
+function createVisitorsTable(visitorKeys) {
+    const visitorsTableContainer = document.getElementById('visitors-table-container');
+    if (!visitorsTableContainer) return;
+    
+    // Kiểm tra nếu không có dữ liệu
+    if (!visitorKeys || visitorKeys.length === 0) {
+        visitorsTableContainer.innerHTML = '<p>Chưa có dữ liệu người dùng nào được ghi nhận</p>';
+        return;
+    }
+    
+    // Tạo bảng
+    let tableHTML = `
+        <table class="data-table" id="visitors-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Thiết bị</th>
+                    <th>Trình duyệt</th>
+                    <th>Thời gian truy cập</th>
+                    <th>Trang đã xem</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+    
+    // Thêm dữ liệu vào bảng (dữ liệu mẫu, cần thay thế bằng dữ liệu thực)
+    for (let i = 0; i < Math.min(visitorKeys.length, 10); i++) {
+        const visitorId = visitorKeys[i];
+        
+        tableHTML += `
+            <tr>
+                <td>${visitorId.replace('visitor_', '')}</td>
+                <td>Desktop</td>
+                <td>Chrome</td>
+                <td>${new Date().toLocaleString()}</td>
+                <td>Homepage</td>
+            </tr>
+        `;
+    }
+    
+    tableHTML += `
+            </tbody>
+        </table>
+    `;
+    
+    visitorsTableContainer.innerHTML = tableHTML;
+}
+
+// Hiển thị thống kê thiết bị
+function displayDeviceStats() {
+    // Dữ liệu mẫu - thay bằng dữ liệu thực từ Google Analytics
+    const deviceData = {
+        desktop: 65,
+        mobile: 30,
+        tablet: 5
+    };
+    
+    // Cập nhật thống kê
+    updateDeviceCharts(deviceData);
+}
+
+// Cập nhật biểu đồ thiết bị
+function updateDeviceCharts(deviceData) {
+    const deviceChartContainer = document.getElementById('device-categories-chart');
+    if (!deviceChartContainer) return;
+    
+    // Xóa nội dung hiện tại
+    deviceChartContainer.innerHTML = '';
+    
+    // Tạo canvas cho biểu đồ
+    const canvas = document.createElement('canvas');
+    canvas.id = 'deviceChart';
+    deviceChartContainer.appendChild(canvas);
+    
+    // Tạo biểu đồ với Chart.js
+    if (typeof Chart !== 'undefined') {
+        new Chart(canvas, {
+            type: 'doughnut',
+            data: {
+                labels: ['Desktop', 'Mobile', 'Tablet'],
+                datasets: [{
+                    data: [deviceData.desktop, deviceData.mobile, deviceData.tablet],
+                    backgroundColor: ['#4831d4', '#ccf381', '#fd8a8a']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#333'
+                        }
+                    }
+                }
+            }
+        });
+    } else {
+        // Fallback nếu không có Chart.js
+        deviceChartContainer.innerHTML = `
+            <div style="text-align: center; padding: 20px;">
+                <p>Desktop: ${deviceData.desktop}%</p>
+                <p>Mobile: ${deviceData.mobile}%</p>
+                <p>Tablet: ${deviceData.tablet}%</p>
+            </div>
+        `;
+    }
+}
+
+// Lưu cài đặt analytics
+function setupAnalyticsForm() {
+    const analyticsForm = document.getElementById('analytics-form');
+    if (!analyticsForm) return;
+    
+    analyticsForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Lấy giá trị từ form
+        const gaId = document.getElementById('ga-id').value;
+        const viewId = document.getElementById('view-id').value;
+        const apiKey = document.getElementById('ga-api-key').value;
+        
+        // Lưu cài đặt vào localStorage
+        localStorage.setItem('ga-settings', JSON.stringify({
+            gaId: gaId,
+            viewId: viewId,
+            apiKey: apiKey,
+            lastUpdated: new Date().toISOString()
+        }));
+        
+        // Cập nhật ID Google Analytics hiện tại
+        localStorage.setItem('ga-id', gaId);
+        
+        // Hiển thị thông báo thành công
+        alert('Cài đặt đã được lưu thành công!');
+        
+        // Tải lại dữ liệu analytics
+        loadAnalyticsData();
+    });
+    
+    // Điền giá trị từ localStorage vào form
+    const settings = getAnalyticsSettings();
+    if (settings) {
+        document.getElementById('ga-id').value = settings.gaId || '';
+        document.getElementById('view-id').value = settings.viewId || '';
+        document.getElementById('ga-api-key').value = settings.apiKey || '';
+    }
+}
+
+// Lấy cài đặt analytics từ localStorage
+function getAnalyticsSettings() {
+    const settingsStr = localStorage.getItem('ga-settings');
+    if (!settingsStr) return null;
+    
+    try {
+        return JSON.parse(settingsStr);
+    } catch (e) {
+        console.error('Lỗi khi đọc cài đặt analytics:', e);
+        return null;
+    }
+}
+
+// Hiển thị thông báo cài đặt
+function showSettingsNotification(message) {
+    // Tìm container thông báo hoặc tạo mới
+    let notificationContainer = document.querySelector('.settings-notification');
+    
+    if (!notificationContainer) {
+        notificationContainer = document.createElement('div');
+        notificationContainer.className = 'settings-notification';
+        notificationContainer.style.cssText = `
+            background-color: #ffbe0b;
+            color: #333;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            text-align: center;
+        `;
+        
+        // Thêm vào đầu trang
+        const mainContent = document.querySelector('.main-content');
+        if (mainContent && mainContent.firstChild) {
+            mainContent.insertBefore(notificationContainer, mainContent.firstChild);
+        }
+    }
+    
+    notificationContainer.textContent = message;
+}
+
+// Xử lý chuyển đổi theme
+function setupThemeToggle() {
+    const themeButtons = document.querySelectorAll('.theme-btn');
+    
+    themeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Xóa lớp active từ tất cả các nút
+            themeButtons.forEach(btn => btn.classList.remove('active'));
+            
+            // Thêm lớp active cho nút hiện tại
+            this.classList.add('active');
+            
+            // Cập nhật theme dựa trên nút được chọn
+            const theme = this.getAttribute('data-theme');
+            document.body.setAttribute('data-theme', theme);
+            localStorage.setItem('admin-theme', theme);
+        });
+    });
+    
+    // Khôi phục theme từ localStorage
+    const savedTheme = localStorage.getItem('admin-theme');
+    if (savedTheme) {
+        document.body.setAttribute('data-theme', savedTheme);
+        themeButtons.forEach(button => {
+            if (button.getAttribute('data-theme') === savedTheme) {
+                button.classList.add('active');
+            } else {
+                button.classList.remove('active');
+            }
+        });
+    }
+}
+
+// Tải dữ liệu từ Google Analytics API
+function loadGAData(settings) {
+    // Đây chỉ là giả định - bạn cần tích hợp thực tế với Google Analytics API
+    console.log('Đang tải dữ liệu từ Google Analytics với cài đặt:', settings);
+    
+    // Cập nhật số liệu mẫu
+    updateSampleMetrics();
+}
+
+// Cập nhật số liệu mẫu
+function updateSampleMetrics() {
+    // Tổng số người truy cập
+    if (document.getElementById('total-visitors')) {
+        document.getElementById('total-visitors').textContent = getRandomInt(100, 1000);
+    }
+    
+    // Số lượt xem trang
+    if (document.getElementById('page-views')) {
+        document.getElementById('page-views').textContent = getRandomInt(500, 5000);
+    }
+    
+    // Thời gian xem trung bình
+    if (document.getElementById('avg-duration')) {
+        document.getElementById('avg-duration').textContent = getRandomInt(1, 5) + 'm ' + getRandomInt(1, 59) + 's';
+    }
+    
+    // Tỷ lệ thoát
+    if (document.getElementById('bounce-rate')) {
+        document.getElementById('bounce-rate').textContent = getRandomInt(30, 70) + '%';
+    }
+}
+
+// Hàm trợ giúp để tạo số ngẫu nhiên
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 } 
