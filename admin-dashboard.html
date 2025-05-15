@@ -10,6 +10,87 @@
     <link rel="stylesheet" href="css/admin-dashboard.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
+    <style>
+        /* CSS cho phần hướng dẫn cấu hình API */
+        .settings-instructions {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #4831d4;
+        }
+        
+        .settings-instructions h4 {
+            margin-top: 0;
+            margin-bottom: 12px;
+            color: #333;
+            font-size: 16px;
+        }
+        
+        .settings-instructions ol {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .settings-instructions li {
+            margin-bottom: 8px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .settings-instructions a {
+            color: #4831d4;
+            text-decoration: none;
+        }
+        
+        .settings-instructions a:hover {
+            text-decoration: underline;
+        }
+        
+        .note-box {
+            background-color: rgba(255, 190, 11, 0.1);
+            border-left: 3px solid #ffbe0b;
+            padding: 10px 15px;
+            margin-top: 15px;
+            border-radius: 4px;
+        }
+        
+        .note-box p {
+            margin: 0;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .detailed-guide {
+            margin-top: 15px;
+            text-align: center;
+        }
+        
+        .detailed-guide-link {
+            display: inline-block;
+            color: #4831d4;
+            text-decoration: none;
+            padding: 8px 15px;
+            border: 1px solid #4831d4;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .detailed-guide-link:hover {
+            background-color: #4831d4;
+            color: white;
+        }
+        
+        .detailed-guide-link i {
+            margin-right: 8px;
+        }
+    </style>
+    
     <!-- Kiểm tra xác thực người dùng -->
     <script>
         // Kiểm tra trạng thái đăng nhập
@@ -30,14 +111,20 @@
     </script>
     
     <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-09V4B9YHB1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
         
-        gtag('config', 'G-09V4B9YHB1');
+        // Sử dụng ID từ localStorage nếu có
+        const gaId = localStorage.getItem('ga-id') || 'G-09V4B9YHB1';
+        gtag('config', gaId);
     </script>
+    
+    <!-- Google API Client Library -->
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://accounts.google.com/gsi/client"></script>
 </head>
 <body>
     <div class="admin-container">
@@ -278,8 +365,35 @@
                                     <label for="view-id">View ID</label>
                                     <input type="text" id="view-id" placeholder="e.g. 123456789">
                                 </div>
+                                <div class="form-group">
+                                    <label for="ga-api-key">Google Analytics API Key</label>
+                                    <input type="text" id="ga-api-key" placeholder="e.g. AIzaSyA...">
+                                </div>
                                 <button type="submit" class="btn primary-btn">Save Settings</button>
                             </form>
+                            
+                            <div class="settings-instructions">
+                                <h4>Hướng dẫn cấu hình Google Analytics API</h4>
+                                <ol>
+                                    <li>Truy cập <a href="https://console.developers.google.com" target="_blank">Google Cloud Console</a></li>
+                                    <li>Tạo một dự án mới hoặc chọn dự án hiện có</li>
+                                    <li>Đi đến "APIs & Services" > "Library" và kích hoạt "Google Analytics API"</li>
+                                    <li>Đi đến "APIs & Services" > "Credentials" và tạo API Key mới</li>
+                                    <li>Sao chép API Key vào trường "Google Analytics API Key" ở trên</li>
+                                    <li>Truy cập <a href="https://analytics.google.com" target="_blank">Google Analytics</a></li>
+                                    <li>Đi đến "Admin" > "View Settings" để lấy View ID</li>
+                                    <li>Sao chép Google Analytics ID (dạng G-XXXXXXXX) từ cài đặt tài khoản</li>
+                                    <li>Nhập thông tin vào form và lưu cài đặt</li>
+                                </ol>
+                                <div class="note-box">
+                                    <p><strong>Lưu ý:</strong> Đảm bảo bạn đã cấu hình đúng quyền truy cập API và kích hoạt Google Analytics API cho dự án của bạn.</p>
+                                </div>
+                                <div class="detailed-guide">
+                                    <a href="ga-setup-guide.html" class="detailed-guide-link">
+                                        <i class="fas fa-book"></i> Xem hướng dẫn chi tiết về cấu hình Google Analytics API
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                         
                         <div class="settings-card">
@@ -318,6 +432,7 @@
     
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/ga-integration.js"></script>
     <script src="js/admin-dashboard.js"></script>
     
     <!-- Xử lý đăng xuất -->

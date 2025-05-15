@@ -53,7 +53,11 @@ document.addEventListener('DOMContentLoaded', function() {
         dateRange.addEventListener('change', function() {
             // Update all data based on new date range
             const range = this.value;
-            updateDataForDateRange(range);
+            if (typeof loadAnalyticsData === 'function') {
+                loadAnalyticsData(); // Sử dụng hàm từ ga-integration.js
+            } else {
+                updateDataForDateRange(range);
+            }
         });
     }
     
@@ -65,19 +69,32 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const gaId = document.getElementById('ga-id').value;
             const viewId = document.getElementById('view-id').value;
+            const apiKey = document.getElementById('ga-api-key').value;
             
             if (gaId && viewId) {
                 // Save to localStorage
                 localStorage.setItem('ga-id', gaId);
                 localStorage.setItem('view-id', viewId);
+                if (apiKey) localStorage.setItem('ga-api-key', apiKey);
                 
                 // Show success message
                 alert('Analytics settings saved successfully. Refreshing data...');
                 
-                // Reload dashboard data
-                initDashboard();
+                // Tải lại dữ liệu sử dụng ga-integration.js nếu có
+                if (typeof loadAnalyticsAPI === 'function') {
+                    // Cập nhật cấu hình
+                    if (typeof GA_CONFIG !== 'undefined') {
+                        GA_CONFIG.gaPropertyId = gaId;
+                        GA_CONFIG.viewId = viewId;
+                        if (apiKey) GA_CONFIG.apiKey = apiKey;
+                    }
+                    loadAnalyticsAPI();
+                } else {
+                    // Fallback đến function trong file này
+                    initDashboard();
+                }
             } else {
-                alert('Please enter both Google Analytics ID and View ID');
+                alert('Vui lòng nhập Google Analytics ID và View ID');
             }
         });
     }
@@ -96,13 +113,22 @@ function initDashboard() {
     // Load saved analytics credentials if available
     const gaId = localStorage.getItem('ga-id');
     const viewId = localStorage.getItem('view-id');
+    const apiKey = localStorage.getItem('ga-api-key');
     
     if (gaId && viewId) {
         document.getElementById('ga-id').value = gaId;
         document.getElementById('view-id').value = viewId;
+        if (apiKey && document.getElementById('ga-api-key')) {
+            document.getElementById('ga-api-key').value = apiKey;
+        }
         
-        // Load initial dashboard data
-        loadOverviewData();
+        // Khởi tạo Google Analytics nếu ga-integration.js đã được tải
+        if (typeof initGoogleAnalytics === 'function') {
+            initGoogleAnalytics();
+        } else {
+            // Fallback nếu ga-integration.js chưa được tải
+            loadOverviewData();
+        }
     } else {
         // Show placeholder data or message
         showPlaceholderData();
@@ -111,6 +137,16 @@ function initDashboard() {
 
 // Load data for the selected tab
 function loadTabData(tabId) {
+    // Nếu ga-integration.js đã được tải, sử dụng chức năng của nó
+    if (typeof loadAnalyticsData === 'function') {
+        // Tải dữ liệu cho tab tương ứng từ ga-integration.js
+        if (tabId === 'overview') {
+            loadAnalyticsData();
+            return;
+        }
+    }
+    
+    // Fallback nếu ga-integration.js chưa được tải hoặc không hỗ trợ tab
     switch (tabId) {
         case 'overview':
             loadOverviewData();
@@ -135,6 +171,12 @@ function loadTabData(tabId) {
 
 // Load overview data
 function loadOverviewData() {
+    // Nếu ga-integration.js đã được tải, sử dụng chức năng của nó
+    if (typeof loadAnalyticsData === 'function') {
+        loadAnalyticsData();
+        return;
+    }
+    
     // Check if credentials are available
     const gaId = localStorage.getItem('ga-id');
     const viewId = localStorage.getItem('view-id');
@@ -176,8 +218,14 @@ function loadOverviewData() {
     createPagesChart(sampleData.pagesChart);
 }
 
-// Create visitors chart
+// Create visitors chart - cái này được sử dụng nếu ga-integration.js không được tải
 function createVisitorChart(data) {
+    // Nếu có hàm tương tự trong ga-integration.js, ưu tiên sử dụng nó
+    if (typeof window.createVisitorChart === 'function' && this !== window) {
+        window.createVisitorChart(data);
+        return;
+    }
+    
     const ctx = document.getElementById('visitors-chart');
     
     // Clear previous content
@@ -217,8 +265,14 @@ function createVisitorChart(data) {
     });
 }
 
-// Create pages chart
+// Create pages chart - cái này được sử dụng nếu ga-integration.js không được tải
 function createPagesChart(data) {
+    // Nếu có hàm tương tự trong ga-integration.js, ưu tiên sử dụng nó
+    if (typeof window.createPagesChart === 'function' && this !== window) {
+        window.createPagesChart(data);
+        return;
+    }
+    
     const ctx = document.getElementById('pages-chart');
     
     // Clear previous content
