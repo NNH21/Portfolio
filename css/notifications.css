@@ -135,4 +135,139 @@
         left: 10px;
         width: calc(100% - 40px);
     }
+}
+
+/* Basic notification container */
+.notifications-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    max-width: 300px;
+    width: 100%;
+}
+
+/* Individual notification */
+.notification {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    margin-bottom: 10px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    transform: translateX(120%);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+}
+
+.notification.notification-show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.notification.notification-hiding {
+    transform: translateX(120%);
+    opacity: 0;
+}
+
+/* Notification icons */
+.notification i {
+    font-size: 20px;
+    margin-right: 15px;
+    color: #4831d4;
+}
+
+/* Music notification specific styles */
+.notification.music-notification i {
+    color: #4831d4;
+    animation: music-pulse 2s infinite;
+}
+
+@keyframes music-pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Notification content */
+.notification-content {
+    flex: 1;
+}
+
+.notification-title {
+    font-weight: 600;
+    margin-bottom: 3px;
+    color: #333;
+}
+
+.notification-message {
+    font-size: 14px;
+    color: #666;
+}
+
+/* Close button */
+.notification-close {
+    background: none;
+    border: none;
+    color: #999;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 5px;
+}
+
+.notification-close:hover {
+    color: #333;
+}
+
+/* Error notification */
+.notification.error {
+    border-left: 4px solid #ff4d4d;
+}
+
+.notification.error i {
+    color: #ff4d4d;
+}
+
+/* Success notification */
+.notification.success {
+    border-left: 4px solid #47d764;
+}
+
+.notification.success i {
+    color: #47d764;
+}
+
+/* Info notification */
+.notification.info {
+    border-left: 4px solid #2196F3;
+}
+
+.notification.info i {
+    color: #2196F3;
+}
+
+/* Music notification */
+.notification.music-notification {
+    border-left: 4px solid #4831d4;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    .notifications-container {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+    
+    .notification {
+        padding: 10px;
+    }
 } 

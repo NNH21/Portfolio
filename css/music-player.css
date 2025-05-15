@@ -1,0 +1,97 @@
+/* Music Player Styles */
+.music-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: #4831d4;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    margin-right: 5px;
+}
+
+.music-icon:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(72, 49, 212, 0.6);
+}
+
+.music-icon.playing {
+    animation: pulse 2s infinite;
+}
+
+.music-icon.playing::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 3px;
+    background: white;
+    bottom: 4px;
+    left: 0;
+    animation: equalizer 1.5s infinite;
+}
+
+/* Pulse animation for playing state */
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(72, 49, 212, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(72, 49, 212, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(72, 49, 212, 0);
+    }
+}
+
+/* Equalizer animation */
+@keyframes equalizer {
+    0%, 100% {
+        transform: scaleY(0.3);
+        height: 2px;
+    }
+    50% {
+        transform: scaleY(1);
+        height: 5px;
+    }
+}
+
+/* Volume indicator dots */
+.music-icon .volume-indicators {
+    position: absolute;
+    right: -2px;
+    top: 10px;
+    display: none;
+}
+
+.music-icon.playing .volume-indicators {
+    display: block;
+}
+
+.music-icon .volume-indicators span {
+    display: block;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background-color: white;
+    margin: 2px 0;
+    opacity: 0;
+    animation: fadeInOut 1.5s infinite;
+}
+
+.music-icon .volume-indicators span:nth-child(2) {
+    animation-delay: 0.5s;
+}
+
+.music-icon .volume-indicators span:nth-child(3) {
+    animation-delay: 1s;
+}
+
+@keyframes fadeInOut {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 1; }
+} 
