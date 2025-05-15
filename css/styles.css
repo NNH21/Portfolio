@@ -1,5 +1,6 @@
 /* ====== Base Styles ====== */
 :root {
+    --hover-gradient: linear-gradient(135deg, #5e3bee 0%, #8661ff 100%);
     --primary-color: #5e3bee;
     --secondary-color: #232e52;
     --background-color: #ffffff;
@@ -11,6 +12,11 @@
     --gradient-primary: linear-gradient(135deg, #5e3bee 0%, #8661ff 100%);
     --box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
     --transition: all 0.3s ease;
+}
+
+/* Thêm transition cho chuyển đổi theme */
+body, a, p, h1, h2, h3, h4, h5, h6, button, input, textarea {
+    transition: color 0.3s ease, background-color 0.3s ease;
 }
 
 * {
@@ -50,6 +56,20 @@ img {
 .section-header {
     text-align: center;
     margin-bottom: 3rem;
+}
+.theme-toggle {
+    position: fixed;
+    background-image: linear-gradient(45deg, #7f67e0, #b6a5ee);
+    color: white;
+    border-radius: 100%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: var(--box-shadow);
+    transition: var(--transition);
 }
 
 .section-header h2 {
@@ -705,7 +725,6 @@ header.scrolled {
     align-items: center;
     justify-content: center;
     gap: 20px;
-    margin-top: 20px;
 }
 
 .prev-slide, .next-slide {
